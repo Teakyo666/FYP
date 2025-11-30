@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace必须与Mapper接口全类名一致 -->
+<mapper namespace="com.example.backend.Mappers.SentenceMapper">
+
+    <!-- 结果集映射：DO字段与数据库表字段的映射关系 -->
+    <resultMap id="SentenceResultMap" type="com.example.backend.DO.SentenceDO">
+        <id column="id" property="id"/>  <!-- 主键映射 -->
+        <result column="sentence" property="sentence"/>
+        <result column="used_date" property="used_date"/>
+        <result column="created_date" property="created_date"/>
+        <result column="created_by" property="created_by"/>
+    </resultMap>
+
+    <!-- 通用插入 -->
+    <insert id="insert" parameterType="com.example.backend.DO.SentenceDO">
+        INSERT INTO sentence (
+            id, sentence, used_date, created_date, created_by
+        ) VALUES (
+                     #{id}, #{sentence}, #{used_date}, #{created_date}, #{created_by}
+                 )
+    </insert>
+
+    <!-- 根据ID删除 -->
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM sentence WHERE id = #{id}
+    </delete>
+
+    <!-- 根据ID全字段更新 -->
+    <update id="updateById" parameterType="com.example.backend.DO.SentenceDO">
+        UPDATE sentence
+        SET
+            sentence = #{sentence},
+            used_date = #{used_date},
+            created_date = #{created_date},
+            created_by = #{created_by}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="java.lang.String" resultMap="SentenceResultMap">
+        SELECT id, sentence, used_date, created_date, created_by
+        FROM sentence
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有 -->
+    <select id="selectAll" resultMap="SentenceResultMap">
+        SELECT id, sentence, used_date, created_date, created_by
+        FROM sentence
+    </select>
+
+
+</mapper>
