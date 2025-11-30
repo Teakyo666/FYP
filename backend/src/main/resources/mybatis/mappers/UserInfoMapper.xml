@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.backend.Mappers.UserInfoMapper">
+
+    <resultMap id="UserInfoResultMap" type="com.example.backend.POJO.DO.UserInfoDO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="user_id" property="userId"/>
+        <result column="city" property="city"/>
+        <result column="country" property="country"/>
+    </resultMap>
+
+    <!-- 1. 新增用户信息 -->
+    <insert id="insert" parameterType="com.example.backend.POJO.DO.UserInfoDO">
+        INSERT INTO user_info (
+            id, name, user_id, city, country
+        ) VALUES (
+                     #{id}, #{name}, #{userId}, #{city}, #{country}
+                 )
+    </insert>
+
+    <!-- 2. 根据 ID 查询 -->
+    <select id="selectById" parameterType="String" resultMap="UserInfoResultMap">
+        SELECT id, name, user_id, city, country
+        FROM user_info
+        WHERE id = #{id}
+    </select>
+
+    <!-- 3. 根据用户id（user_id）查询 -->
+    <select id="selectByUserId" parameterType="String" resultMap="UserInfoResultMap">
+        SELECT id, name, user_id, city, country
+        FROM user_info
+        WHERE user_id = #{user_id}
+    </select>
+
+    <!-- 4. 查询所有 -->
+    <select id="selectAll" resultMap="UserInfoResultMap">
+        SELECT id, name, user_id, city, country
+        FROM user_info
+    </select>
+
+    <!-- 5. 全字段更新（仅更新非空的DO字段） -->
+    <update id="update" parameterType="com.example.backend.POJO.DO.UserInfoDO">
+        UPDATE user_info
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="userId != null and userId != ''">
+                user_id = #{userId},
+            </if>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="country != null and country != ''">
+                country = #{country},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 6. 根据ID删除 -->
+    <delete id="deleteById" parameterType="String">
+        DELETE FROM user_info WHERE id = #{id}
+    </delete>
+
+</mapper>

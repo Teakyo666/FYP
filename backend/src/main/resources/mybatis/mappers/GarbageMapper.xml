@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 对应 Mapper 接口全路径 -->
+<mapper namespace="com.example.backend.Mappers.GarbageMapper">
+
+    <!-- 通用结果集映射（复用） -->
+    <resultMap id="GarbageResultMap" type="com.example.backend.POJO.DO.GarbageDO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="category" property="category"/>
+        <result column="reason" property="reason"/>
+    </resultMap>
+
+    <!-- 1. 新增垃圾信息 -->
+    <insert id="insert" parameterType="com.example.backend.POJO.DO.GarbageDO">
+        INSERT INTO garbage (id, name, category, reason)
+        VALUES (#{id}, #{name}, #{categoryId}, #{reason})
+    </insert>
+
+    <!-- 2. 根据ID查询单条 -->
+    <select id="selectById" parameterType="String" resultMap="GarbageResultMap">
+        SELECT id, name, category, reason
+        FROM garbage
+        WHERE id = #{id}
+    </select>
+
+    <!-- 3. 根据名称查询（用户名/垃圾名，按你的业务调整） -->
+    <select id="selectByName" parameterType="String" resultMap="GarbageResultMap">
+        SELECT id, name, category, reason
+        FROM garbage
+        WHERE name = #{name}
+    </select>
+
+    <!-- 4. 查询所有垃圾信息 -->
+    <select id="selectAll" resultMap="GarbageResultMap">
+        SELECT id, name, category, reason
+        FROM garbage
+        ORDER BY id DESC
+    </select>
+
+
+    <!-- 5. 全字段更新（非空判断，避免覆盖） -->
+    <update id="update" parameterType="com.example.backend.POJO.DO.GarbageDO">
+        UPDATE garbage
+        SET
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        <if test="categoryId != null and category != ''">
+            category = #{category},
+        </if>
+        <if test="reason != null and reason != ''">
+            reason = #{reason}
+        </if>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 6. 根据ID删除 -->
+    <delete id="deleteById" parameterType="String">
+        DELETE FROM garbage WHERE id = #{id}
+    </delete>
+
+</mapper>
