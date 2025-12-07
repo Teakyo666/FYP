@@ -4,6 +4,7 @@ public class GarbageDO {
     private String id;
     private String name;
     private String category;
+    private String title;
     private String reason;
 
     public String getId() {
@@ -26,7 +27,7 @@ public class GarbageDO {
         return category;
     }
 
-    public void setCategory(String categoryId) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
@@ -36,5 +37,13 @@ public class GarbageDO {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

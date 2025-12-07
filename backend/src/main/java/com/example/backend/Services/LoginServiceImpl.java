@@ -49,7 +49,8 @@ public class LoginServiceImpl implements LoginService {
 
         // Auto generate system name
         String cleanId = InfoId == null ? "" : InfoId.replace("-", "");
-        String name = "user" + cleanId + (int)(Math.random() * 99);;
+        String shortId = cleanId.substring(0, Math.min(8, cleanId.length()));
+        String name = "User" + shortId + (int)(Math.random() * 100);
         userInfoDO.setName(name);
         userInfoMapper.insert(userInfoDO);
         return uuid;
@@ -64,6 +65,8 @@ public class LoginServiceImpl implements LoginService {
                 Map<String, Object> dataMap = new HashMap<>();
                 dataMap.put("id", login.getId());
                 dataMap.put("role", login.getRole());
+                UserInfoDO userInfoDO = userInfoMapper.selectByUserId(login.getId());
+                dataMap.put("name", userInfoDO.getName());
                 result.setData(dataMap);
                 result.setSuccess(Boolean.TRUE);
             }else{

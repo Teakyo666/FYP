@@ -1,14 +1,11 @@
 package com.example.backend.POJO.DO;
 
 
-import java.util.Date;
-
 public class LoginDO {
     private String id;
     private String username;
     private String password;
     private String role;
-    private Date updateTime;
 
     public String getId() {
         return id;

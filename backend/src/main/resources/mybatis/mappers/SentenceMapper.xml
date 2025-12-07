@@ -3,55 +3,69 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- namespace必须与Mapper接口全类名一致 -->
 <mapper namespace="com.example.backend.Mappers.SentenceMapper">
 
-    <!-- 结果集映射：DO字段与数据库表字段的映射关系 -->
-    <resultMap id="SentenceResultMap" type="com.example.backend.DO.SentenceDO">
-        <id column="id" property="id"/>  <!-- 主键映射 -->
+    <!-- 结果集映射：数据库下划线字段 → DO驼峰字段 -->
+    <resultMap id="SentenceResultMap" type="com.example.backend.POJO.DO.SentenceDO">
+        <id column="id" property="id"/>  <!-- 主键 -->
         <result column="sentence" property="sentence"/>
-        <result column="used_date" property="used_date"/>
-        <result column="created_date" property="created_date"/>
-        <result column="created_by" property="created_by"/>
+        <!-- 核心：数据库create_date → DO的createDate；类型自动适配LocalDateTime -->
+        <result column="create_date" property="createDate"/>
+        <!-- 数据库create_by → DO的createBy -->
+        <result column="create_by" property="createBy"/>
     </resultMap>
 
-    <!-- 通用插入 -->
-    <insert id="insert" parameterType="com.example.backend.DO.SentenceDO">
+    <!-- 插入：去掉id（自增），字段名匹配数据库 -->
+    <insert id="insert" parameterType="com.example.backend.POJO.DO.SentenceDO">
         INSERT INTO sentence (
-            id, sentence, used_date, created_date, created_by
+        sentence, create_date, create_by
         ) VALUES (
-                     #{id}, #{sentence}, #{used_date}, #{created_date}, #{created_by}
-                 )
+        #{sentence}, #{createDate}, #{createBy}
+        )
+        <!-- 回填自增ID到DO的id字段 -->
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
-    <!-- 根据ID删除 -->
-    <delete id="deleteById" parameterType="java.lang.String">
+    <!-- 删除：参数类型Long（匹配DO的id类型） -->
+    <delete id="deleteById" parameterType="java.lang.Long">
         DELETE FROM sentence WHERE id = #{id}
     </delete>
 
-    <!-- 根据ID全字段更新 -->
-    <update id="updateById" parameterType="com.example.backend.DO.SentenceDO">
+    <!-- 更新：字段名匹配数据库，只更业务字段 -->
+    <update id="updateById" parameterType="com.example.backend.POJO.DO.SentenceDO">
         UPDATE sentence
         SET
             sentence = #{sentence},
-            used_date = #{used_date},
-            created_date = #{created_date},
-            created_by = #{created_by}
+            create_date = #{createDate},
+            create_by = #{createBy}
         WHERE id = #{id}
     </update>
 
-    <!-- 根据ID查询 -->
-    <select id="selectById" parameterType="java.lang.String" resultMap="SentenceResultMap">
-        SELECT id, sentence, used_date, created_date, created_by
+    <!-- 根据ID查询：只查数据库存在的字段 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="SentenceResultMap">
+        SELECT id, sentence, create_date, create_by
         FROM sentence
         WHERE id = #{id}
     </select>
 
-    <!-- 查询所有 -->
+    <!-- 查询所有：字段匹配数据库 -->
     <select id="selectAll" resultMap="SentenceResultMap">
-        SELECT id, sentence, used_date, created_date, created_by
+        SELECT id, sentence, create_date, create_by
         FROM sentence
     </select>
 
+    <!-- 条件查询（支持句子内容模糊查询） -->
+    <select id="selectByCondition" parameterType="String" resultMap="SentenceResultMap">
+        SELECT id, sentence, create_date, create_by
+        FROM sentence
+        <where>
+            <if test="sentence != null and sentence != ''">
+                AND sentence LIKE CONCAT('%', #{sentence}, '%')
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
 
 </mapper>

@@ -1,7 +1,6 @@
 package com.example.backend.Mappers;
 
 import com.example.backend.POJO.DO.GarbageDO;
-import com.example.backend.POJO.DO.LoginDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,9 +20,12 @@ public interface GarbageMapper {
     // 4. 查询所有
     List<GarbageDO> selectAll();
 
-    // 5. 全字段更新（非空字段才更新，避免覆盖）
+    // 5. 带条件查询（用于分页）
+    List<GarbageDO> selectWithConditions(@Param("keyword") String keyword, @Param("type") String type);
+
+    // 6. 全字段更新（非空字段才更新，避免覆盖）
     int update(GarbageDO garbageDO);
 
-    // 6. 根据 ID 删除（单条删除）
+    // 7. 根据 ID 删除（单条删除）
     int deleteById(@Param("id") String id);
 }

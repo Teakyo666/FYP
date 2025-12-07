@@ -11,34 +11,35 @@
         <result column="user_id" property="userId"/>
         <result column="city" property="city"/>
         <result column="country" property="country"/>
+        <result column="avatar" property="avatar"/>
     </resultMap>
 
     <!-- 1. 新增用户信息 -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.UserInfoDO">
         INSERT INTO user_info (
-            id, name, user_id, city, country
+            id, name, user_id, city, country, avatar
         ) VALUES (
-                     #{id}, #{name}, #{userId}, #{city}, #{country}
+                     #{id}, #{name}, #{userId}, #{city}, #{country}, #{avatar}
                  )
     </insert>
 
     <!-- 2. 根据 ID 查询 -->
     <select id="selectById" parameterType="String" resultMap="UserInfoResultMap">
-        SELECT id, name, user_id, city, country
+        SELECT id, name, user_id, city, country, avatar
         FROM user_info
         WHERE id = #{id}
     </select>
 
     <!-- 3. 根据用户id（user_id）查询 -->
     <select id="selectByUserId" parameterType="String" resultMap="UserInfoResultMap">
-        SELECT id, name, user_id, city, country
+        SELECT id, name, user_id, city, country, avatar
         FROM user_info
         WHERE user_id = #{user_id}
     </select>
 
     <!-- 4. 查询所有 -->
     <select id="selectAll" resultMap="UserInfoResultMap">
-        SELECT id, name, user_id, city, country
+        SELECT id, name, user_id, city, country, avatar
         FROM user_info
     </select>
 
@@ -58,6 +59,9 @@
             <if test="country != null and country != ''">
                 country = #{country},
             </if>
+            <if test="avatar != null and avatar != ''">
+                avatar = #{avatar},
+            </if>
         </set>
         WHERE id = #{id}
     </update>
@@ -66,5 +70,17 @@
     <delete id="deleteById" parameterType="String">
         DELETE FROM user_info WHERE id = #{id}
     </delete>
+
+    <!-- 7. 条件查询（支持姓名模糊查询） -->
+    <select id="selectByCondition" parameterType="String" resultMap="UserInfoResultMap">
+        SELECT id, name, user_id, city, country, avatar
+        FROM user_info
+        <where>
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
 
 </mapper>

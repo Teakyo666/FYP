@@ -6,6 +6,7 @@ public class UserInfoDO {
     private String userId;
     private String city;
     private String country;
+    private String avatar;
 
     public String getId() {
         return id;
@@ -46,4 +47,11 @@ public class UserInfoDO {
         this.country = country;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

@@ -11,39 +11,38 @@
         <result column="username" property="username"/>
         <result column="password" property="password"/>
         <result column="role" property="role"/>
-        <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <!-- 1. Add -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.LoginDO">
-        INSERT INTO login (id, username, password, role, update_time)
-        VALUES (#{id}, #{username}, #{password}, #{role}, NOW())
+        INSERT INTO login (id, username, password, role)
+        VALUES (#{id}, #{username}, #{password}, #{role})
     </insert>
 
     <!-- 2. select by ID -->
     <select id="selectById" parameterType="String" resultMap="LoginBaseMap">
-        SELECT id, username, password, role, update_time
+        SELECT id, username, password, role
         FROM login
         WHERE id = #{id}
     </select>
 
     <!-- 3. check from username -->
     <select id="selectByUsername" parameterType="String" resultMap="LoginBaseMap">
-        SELECT id, username, password, role, update_time
+        SELECT id, username, password, role
         FROM login
         WHERE username = #{username}
     </select>
 
     <!-- 4. check all -->
     <select id="selectAll" resultMap="LoginBaseMap">
-        SELECT id, username, password, role, update_time
+        SELECT id, username, password, role
         FROM login
         ORDER BY update_time DESC <!-- 按更新时间倒序 -->
     </select>
 
     <!-- 5. 条件查询（非空才拼接条件，避免 SQL 语法错误） -->
     <select id="selectByCondition" resultMap="LoginBaseMap">
-        SELECT id, username, password, role, update_time
+        SELECT id, username, password, role
         FROM login
         <where>
             <if test="username != null and username.trim() != ''">
@@ -63,9 +62,8 @@
             <if test="username != null and username.trim() != ''">username = #{username},</if>
             <if test="password != null and password.trim() != ''">password = #{password},</if>
             <if test="role != null and role.trim() != ''">role = #{role},</if>
-            update_time = NOW() <!-- 每次更新必刷新时间 -->
         </set>
-        WHERE id = #{id} <!-- 按 ID 更新 -->
+        WHERE id = #{id}
     </update>
 
     <!-- 7. delete by ID -->

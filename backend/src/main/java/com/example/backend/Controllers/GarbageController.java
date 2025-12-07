@@ -2,14 +2,13 @@ package com.example.backend.Controllers;
 
 import com.example.backend.POJO.DO.GarbageDO;
 import com.example.backend.POJO.Result;
-import com.example.backend.POJO.VO.GarbageVO;
 import com.example.backend.Services.GarbageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.bind.annotation.RequestBody;
+//import java.util.List;
+//import com.example.backend.POJO.Request.GarbageClassifyRequest;
 
 @RestController
 @RequestMapping("/home")
@@ -19,23 +18,39 @@ public class GarbageController {
     private GarbageService garbageService;
 
     @PostMapping("/create")
-    public Result createGarbage(GarbageVO garbageVO) {
-        return garbageService.createGarbage(garbageVO);
+    public Result createGarbage(@RequestBody GarbageDO garbageDO) {
+
+        return garbageService.createGarbage(garbageDO);
     }
 
     @PostMapping("/update")
-    public Result updateGarbage(GarbageDO garbageDO) {
+    public Result updateGarbage(@RequestBody GarbageDO garbageDO) {
         return garbageService.updateGarbage(garbageDO);
     }
 
     @PostMapping("/delete")
-    public Result deleteGarbage(String garbageId) {
-        return garbageService.deleteGarbage(garbageId);
+    public Result deleteGarbage(@RequestParam String Id) {
+        return garbageService.deleteGarbage(Id);
     }
 
     @GetMapping("/get")
-    public Result getGarbage(String garbageName) {
+    public Result getGarbage(@RequestParam String garbageName) {
         return garbageService.getGarbage(garbageName);
     }
 
+    @GetMapping("/list")
+    public Result listGarbage(
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) String type
+    ) {
+        return garbageService.listGarbage(page, size, keyword, type);
+    }
+
+
+//    @PostMapping("/classify")
+//    public Result classifyGarbage(@RequestParam String garbageName) {
+//        return garbageService.classifyGarbage(garbageName);
+//    }
 }

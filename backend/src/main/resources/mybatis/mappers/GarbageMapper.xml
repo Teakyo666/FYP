@@ -10,36 +10,52 @@
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="category" property="category"/>
-        <result column="reason" property="reason"/>
+        <result column="title" property="title"/>
+        <!-- 关键修复：指定 jdbcType 以正确处理 MySQL TEXT/BLOB 字段 -->
+        <result column="reason" property="reason" jdbcType="LONGVARCHAR"/>
     </resultMap>
 
     <!-- 1. 新增垃圾信息 -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.GarbageDO">
-        INSERT INTO garbage (id, name, category, reason)
-        VALUES (#{id}, #{name}, #{categoryId}, #{reason})
+        INSERT INTO garbage (id, name, category, title, reason)
+        VALUES (#{id}, #{name}, #{category}, #{title}, #{reason})
     </insert>
 
     <!-- 2. 根据ID查询单条 -->
     <select id="selectById" parameterType="String" resultMap="GarbageResultMap">
-        SELECT id, name, category, reason
+        SELECT id, name, category, title, reason
         FROM garbage
         WHERE id = #{id}
     </select>
 
     <!-- 3. 根据名称查询（用户名/垃圾名，按你的业务调整） -->
     <select id="selectByName" parameterType="String" resultMap="GarbageResultMap">
-        SELECT id, name, category, reason
+        SELECT id, name, category, title, reason
         FROM garbage
         WHERE name = #{name}
     </select>
 
     <!-- 4. 查询所有垃圾信息 -->
     <select id="selectAll" resultMap="GarbageResultMap">
-        SELECT id, name, category, reason
+        SELECT id, name, category, title, reason
         FROM garbage
         ORDER BY id DESC
     </select>
 
+    <!-- 5. 带条件查询（用于分页） -->
+    <select id="selectWithConditions" resultMap="GarbageResultMap">
+        SELECT id, name, category, title, reason
+        FROM garbage
+        <where>
+            <if test="keyword != null and keyword.trim() != ''">
+                AND name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="type != null and type.trim() != ''">
+                AND category = #{type}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
 
     <!-- 5. 全字段更新（非空判断，避免覆盖） -->
     <update id="update" parameterType="com.example.backend.POJO.DO.GarbageDO">
@@ -48,8 +64,11 @@
         <if test="name != null and name != ''">
             name = #{name},
         </if>
-        <if test="categoryId != null and category != ''">
+        <if test="category != null and category != ''">
             category = #{category},
+        </if>
+        <if test="title != null and title != ''">
+            title = #{title},
         </if>
         <if test="reason != null and reason != ''">
             reason = #{reason}

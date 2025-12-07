@@ -14,7 +14,9 @@ service.interceptors.request.use(
   (config) => {
     return config; // 直接返回配置，不做额外处理
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 // 响应拦截器：统一处理结果（适配你后端的 success: true/false）
@@ -31,7 +33,6 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    console.error("接口请求失败：", error);
     alert("网络异常，请稍后再试");
     return Promise.reject(error);
   }

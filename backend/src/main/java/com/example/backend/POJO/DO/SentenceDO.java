@@ -1,13 +1,12 @@
 package com.example.backend.POJO.DO;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime; // 改为LocalDateTime适配timestamp
 
 public class SentenceDO {
     private Long id;
     private String sentence;
-    private Timestamp used_date;
-    private Timestamp created_date;
-    private String created_by;
+    private LocalDateTime createDate;
+    private String createBy;
 
     public Long getId() {
         return id;
@@ -25,27 +24,19 @@ public class SentenceDO {
         this.sentence = sentence;
     }
 
-    public Timestamp getUsed_date() {
-        return used_date;
+    public LocalDateTime getCreateDate() { // 驼峰命名：createDate
+        return createDate;
     }
 
-    public void setUsed_date(Timestamp used_date) {
-        this.used_date = used_date;
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
     }
 
-    public Timestamp getCreated_date() {
-        return created_date;
+    public String getCreateBy() { // 驼峰命名：createBy
+        return createBy;
     }
 
-    public void setCreated_date(Timestamp created_date) {
-        this.created_date = created_date;
-    }
-
-    public String getCreated_by() {
-        return created_by;
-    }
-
-    public void setCreated_by(String created_by) {
-        this.created_by = created_by;
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 }
