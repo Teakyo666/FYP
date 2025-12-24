@@ -11,7 +11,8 @@ export const menuConfig = {
       component: 'dashboard/Home',
       icon: 'House',
       title: '仪表盘',
-      roles: ['admin', 'volunteer', 'recycler', 'customer']
+      roles: ['admin', 'volunteer', 'recycler', 'customer'],
+      order: 0
     }
   ],
   
@@ -20,70 +21,76 @@ export const menuConfig = {
     {
       path: '/dashboard/admin/garbage',
       name: 'AdminGarbage',
-      component: 'admindashboard/Garbage',
+      component: 'dashboard/admin/garbage',
       icon: 'Delete',
       title: '垃圾管理',
-      roles: ['admin']
+      roles: ['admin'],
+      order: 2
     },
     {
       path: '/dashboard/admin/user',
       name: 'AdminUser',
-      component: 'admindashboard/User',
+      component: 'dashboard/admin/user',
       icon: 'User',
       title: '用户管理',
-      roles: ['admin']
+      roles: ['admin'],
+      order: 2
+    },
+    {
+      path: '/dashboard/admin/AI',
+      name: 'AdminAI',
+      component: 'dashboard/admin/AI',
+      icon: 'Robot',
+      title: 'AI生成管理',
+      roles: ['admin'],
+      order: 2
+    },
+    {
+      path: '/dashboard/admin/apply',
+      name: 'AdminApply',
+      component: 'dashboard/admin/apply',
+      icon: 'Check',
+      title: '申请管理',
+      roles: ['admin'],
+      order: 2
     },
     
   ],
   
   // 志愿者专属菜单
   volunteer: [
-    {
-      path: '/dashboard/volunteer',
-      name: 'VolunteerDashboard',
-      component: 'volunteerdashboard',
-      icon: 'Van',
-      title: '志愿者中心',
-      roles: ['volunteer']
-    }
-    
   ],
   
   // 回收员专属菜单
   recycler: [
-    {
-      path: '/dashboard/recycler',
-      name: 'RecyclerDashboard',
-      component: 'recyclerdashboard',
-      icon: 'HelpFilled',
-      title: '回收员中心',
-      roles: ['recycler']
-    },
   ],
   
   // 普通用户专属菜单
   customer: [
-    {
-      path: '/dashboard/customer',
-      name: 'UserDashboard',
-      component: 'userdashboard',
-      icon: 'User',
-      title: '个人中心',
-      roles: ['customer']
-    },
     
   ],
   
-  // 通用功能菜单（所有登录用户都可以访问）
+  // 通用功能菜单
   general: [
     {
-      path: '/dashboard/garbage',
-      name: 'GarbageQuery',
-      component: 'dashboard/Garbage/query',
-      icon: 'Search',
-      title: '垃圾分类查询',
-      roles: ['admin', 'volunteer', 'recycler', 'customer']
-    }
+      path: '/dashboard/garbage/sentence',
+      name: 'GarbageSentence',
+      component: 'dashboard/Garbage/sentence',
+      icon: 'Message',
+      title: '垃圾提示信息管理',
+      roles: ['admin', 'volunteer'],
+      order: 1
+    },
+    {
+      path: '/dashboard/garbage/place',
+      name: 'GarbagePlace',
+      component: 'dashboard/Garbage/place',
+      icon: 'Location',
+      title: '垃圾地点管理',
+      roles: ['admin', 'volunteer', 'recycler', 'customer'],
+      order: 1
+    },
+    
   ]
 }
 
@@ -110,6 +117,9 @@ export const getUserMenus = (role) => {
   
   // 添加通用功能菜单
   menus = menus.concat(menuConfig.general)
+  
+  // 根据order属性排序
+  menus.sort((a, b) => (a.order || 0) - (b.order || 0))
   
   return menus
 }

@@ -33,6 +33,10 @@
             </div>
             <template #dropdown>
               <el-dropdown-menu class="custom-dropdown">
+                <el-dropdown-item @click="router.push('/dashboard/add-apply')">
+                  <el-icon><Plus /></el-icon>
+                  添加申请
+                </el-dropdown-item>
                 <el-dropdown-item @click="router.push('/dashboard/profile')">
                   <el-icon><User /></el-icon>
                   个人资料
@@ -69,6 +73,7 @@ import {
   Bell,
   SwitchButton,
   User,
+  Plus
 } from '@element-plus/icons-vue'
 
 const route = useRoute()

@@ -90,27 +90,4 @@ public class GarbageServiceImpl implements GarbageService {
         return result;
     }
 
-//    @Override
-//    public Result classifyGarbage(String garbageName) {
-//        Result result = new Result();
-//        Map<String, Object> Headers = new HashMap<>();
-//        Headers.put("Authorization", "Bearer cztei_0i2P5CZTEjmhTcA3CSCdqacEVzWnDHBw0jbPUI25KOyD97jZinI5FFEGsa3JIKj5y");
-//        Headers.put("Content-Type", "application/json");
-//        Map<String, Object> data = new HashMap<>();
-//        data.put("workflow_id", "7513617122258747400");
-//        data.put("app_id", "7512761925290737682");
-//        Map<String, Object> parameters = new HashMap<>();
-//        parameters.put("Type","check");
-//        parameters.put("question", garbageName);
-//        data.put("parameters", parameters);
-//
-//        String url = "https://api.coze.com/v1/workflow/stream_run";
-//        // 调用api
-//        WebClient WebClient = WeClient.create(url);
-//
-//
-//
-//
-//        return result;
-//    }
 }

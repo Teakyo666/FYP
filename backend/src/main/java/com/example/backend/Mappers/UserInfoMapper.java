@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface UserInfoMapper {
-    // 1. 新增垃圾信息
+    // 1. 新增用户信息
     int insert(UserInfoDO userInfoDO);
 
     // 2. 根据 ID 查询（单条查询）

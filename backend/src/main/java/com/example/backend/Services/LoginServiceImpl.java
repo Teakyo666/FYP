@@ -10,8 +10,8 @@ import com.example.backend.POJO.VO.ForgotPasswordVO;
 import com.example.backend.POJO.VO.LoginRequestVO;
 import com.example.backend.POJO.VO.PasswordResetDO;
 import com.example.backend.POJO.VO.ResetPasswordVO;
-import com.example.backend.Services.Tools.PasswordToken;
-import com.example.backend.Services.Tools.TokenUtil;
+import com.example.backend.units.PasswordToken;
+import com.example.backend.units.TokenUtil;
 import jakarta.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -52,6 +52,7 @@ public class LoginServiceImpl implements LoginService {
         String shortId = cleanId.substring(0, Math.min(8, cleanId.length()));
         String name = "User" + shortId + (int)(Math.random() * 100);
         userInfoDO.setName(name);
+        userInfoDO.setAvatar("http://localhost:8080/assets/2025/12/avatar_524d83a5496f.png");
         userInfoMapper.insert(userInfoDO);
         return uuid;
     }
@@ -67,6 +68,7 @@ public class LoginServiceImpl implements LoginService {
                 dataMap.put("role", login.getRole());
                 UserInfoDO userInfoDO = userInfoMapper.selectByUserId(login.getId());
                 dataMap.put("name", userInfoDO.getName());
+                dataMap.put("avatar", userInfoDO.getAvatar());
                 result.setData(dataMap);
                 result.setSuccess(Boolean.TRUE);
             }else{

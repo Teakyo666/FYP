@@ -11,12 +11,13 @@ public interface ApplyMapper {
 
     int insert(ApplyDO applyDO);
 
-    int deleteById(@Param("id") Long id);
+    int deleteById(@Param("id") String id);
 
-    int updateById(ApplyDO applyDO);
+    int update(ApplyDO applyDO);
 
-    ApplyDO selectById(@Param("id") Long id);
+    ApplyDO selectById(@Param("id") String id);
 
     List<ApplyDO> selectAll();
-
+    
+    List<ApplyDO> selectByCondition(@Param("to_apply") String to_apply, @Param("status") String status);
 }

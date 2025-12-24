@@ -5,7 +5,7 @@ import com.example.backend.Mappers.UserInfoMapper;
 import com.example.backend.POJO.DO.LoginDO;
 import com.example.backend.POJO.DO.UserInfoDO;
 import com.example.backend.POJO.Result;
-import com.example.backend.Services.Tools.PasswordToken;
+import com.example.backend.units.PasswordToken;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;

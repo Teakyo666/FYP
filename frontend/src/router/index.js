@@ -24,20 +24,16 @@ const constantRoutes = [
         component: () => import('@/views/dashboard/Home.vue')
       },
       {
-        path: 'volunteer',
-        component: () => import('@/views/volunteerdashboard/index.vue')
-      },
-      {
-        path: 'recycler',
-        component: () => import('@/views/recyclerdashboard/index.vue')
-      },
-      {
-        path: 'customer',
-        component: () => import('@/views/userdashboard/index.vue')
-      },
-      {
         path: 'profile',
         component: () => import('@/views/dashboard/Profile.vue')
+      },
+      {
+        path: 'admin/apply',
+        component: () => import('@/views/dashboard/admin/apply.vue')
+      },
+      {
+        path: 'add-apply',
+        component: () => import('@/views/dashboard/AddApply.vue')
       },
       {
         path: 'garbage',
@@ -51,6 +47,19 @@ const constantRoutes = [
         path: 'admin/user',
         component: () => import('@/views/dashboard/admin/user.vue')
       },
+      {
+        path: 'admin/AI',
+        component: () => import('@/views/dashboard/admin/AI.vue')
+      },
+      {
+        path: 'garbage/sentence',
+        component: () => import('@/views/dashboard/Garbage/sentence.vue')
+      },
+      {
+        path: 'garbage/place',
+        component: () => import('@/views/dashboard/Garbage/place.vue')
+      },
+
     ]
   }
 ]

@@ -19,7 +19,7 @@ service.interceptors.request.use(
   }
 );
 
-// 响应拦截器：统一处理结果（适配你后端的 success: true/false）
+// 响应拦截器：统一处理结果（success: true/false）
 service.interceptors.response.use(
   (response) => {
     const res = response.data;
@@ -28,12 +28,12 @@ service.interceptors.response.use(
       return res; // 直接返回后端数据，页面里直接用 res.data
     } else {
       // 失败时自动提示错误
-      alert(res.message || "操作失败");
+      // 不再使用alert显示错误，改为静默处理
       return Promise.reject(res);
     }
   },
   (error) => {
-    alert("网络异常，请稍后再试");
+    // 不再显示网络异常提示，改为静默处理
     return Promise.reject(error);
   }
 );

@@ -40,6 +40,10 @@
             class="result-tip"
           />
         </div>
+        <!-- 显示自动保存状态 -->
+        <div class="auto-save-status" v-if="autoSaveStatus">
+          <el-tag :type="autoSaveStatus.type">{{ autoSaveStatus.message }}</el-tag>
+        </div>
       </el-card>
     </div>
     
@@ -104,6 +108,7 @@ import { ref } from 'vue'
 import { Search, MagicStick } from '@element-plus/icons-vue'
 import { ElMessage, ElNotification } from 'element-plus'
 import { Garbage } from '@/api/Garbage'
+import { runGarbageClassification, AIGarbage } from '@/api/AI'
 
 // 响应式数据
 const garbageName = ref('')
@@ -111,6 +116,7 @@ const result = ref(null)
 const loading = ref(false)
 const notFoundMessage = ref('')
 const showAIHint = ref(false)
+const autoSaveStatus = ref(null) // 自动保存状态
 
 // 常见垃圾分类示例
 const examples = ref([
@@ -142,42 +148,136 @@ const queryGarbage = async () => {
       // 隐藏AI提示
       showAIHint.value = false
     } else {
-      // 查询失败时显示后端返回的错误信息，并提供AI查询选项
       const errorMsg = response.message || '未找到该垃圾的分类信息'
-      // 不再显示ElMessage错误提示，只在AI提示区域显示
       
       // 显示AI查询提示
       notFoundMessage.value = errorMsg
       showAIHint.value = true
     }
   } catch (error) {
-    console.error('查询失败:', error)
-    // 不再显示通用错误提示，只在AI提示区域显示
-    notFoundMessage.value = '你可以尝试询问AI'
+    // 不再显示网络异常提示，直接显示AI查询提示
+    notFoundMessage.value = '未找到该垃圾的分类信息，你可以尝试询问AI'
     showAIHint.value = true
   } finally {
     loading.value = false
   }
 }
 
-// AI查询垃圾分类（占位功能）
-const queryByAI = () => {
+// AI查询垃圾分类
+const queryByAI = async () => {
   if (!garbageName.value.trim()) {
     ElMessage.warning('请输入垃圾名称')
     return
   }
   
-  // 显示通知，说明这是占位功能
-  ElNotification({
-    title: 'AI查询',
-    message: `AI查询功能尚未实现，您输入的"${garbageName.value}"将通过AI模型进行分析（预留功能）`,
-    type: 'info',
-    duration: 5000
-  })
+  try {
+    loading.value = true
+    autoSaveStatus.value = null
+    
+    // 调用AI API进行垃圾分类查询
+    const responseData = await runGarbageClassification(garbageName.value.trim())
+    
+    // 显示通知，说明AI查询正在进行
+    ElNotification({
+      title: 'AI查询',
+      message: `正在通过AI模型分析"${garbageName.value}"的分类信息...`,
+      type: 'info',
+      duration: 3000
+    })
+    
+    // 简化响应处理 - 直接从API响应中提取数据
+    let outputData = null
+    
+    // 处理新API的响应格式
+    if (responseData && responseData.choices && responseData.choices.length > 0) {
+      const choice = responseData.choices[0]
+      if (choice.messages && choice.messages.content) {
+        // 提取内容
+        const content = choice.messages.content.msg || choice.messages.content
+        
+        // 如果是字符串，尝试解析为JSON
+        if (typeof content === 'string') {
+          try {
+            const parsed = JSON.parse(content)
+            // 检查是否有answer字段
+            outputData = parsed.answer || parsed
+          } catch (e) {
+            // 如果不是JSON，直接使用原始内容
+            outputData = {
+              type: '未知分类',
+              disadv: '无分类原因说明',
+              title: content
+            }
+          }
+        } else {
+          // 如果已经是对象，直接使用
+          outputData = content
+        }
+      }
+    }
+    
+    if (outputData) {
+      // 映射字段
+      result.value = {
+        name: garbageName.value,
+        category: outputData.type || '未知分类',
+        reason: outputData.disadv || '无分类原因说明',
+        title: outputData.title || outputData.content || '无处理建议'
+      }
+      
+      // 自动保存到AI库
+      await autoSaveToAILibrary(result.value)
+      
+      ElMessage.success('AI查询完成')
+    } else {
+      ElMessage.error('AI查询失败：未能解析响应数据')
+    }
+    
+    loading.value = false
+  } catch (error) {
+    console.error('AI查询失败:', error)
+    ElMessage.error('AI查询失败: ' + (error.message || '未知错误'))
+    loading.value = false
+  }
+}
+
+// 自动保存到AI库的功能
+const autoSaveToAILibrary = async (resultData) => {
+  if (!resultData) {
+    return
+  }
   
-  // 这里可以添加实际的AI查询逻辑
-  // 例如调用AI API等
-  console.log('AI查询请求:', garbageName.value)
+  try {
+    // 准备要保存的数据
+    const aiData = {
+      name: resultData.name,
+      category: resultData.category,
+      reason: resultData.reason,
+      title: resultData.title,
+      status: '待审核'
+    }
+    
+    // 调用API保存到AI库
+    const response = await AIGarbage(aiData)
+    
+    if (response.success) {
+      autoSaveStatus.value = {
+        type: 'success',
+        message: '此内容为AI生成'
+      }
+    } else {
+      autoSaveStatus.value = {
+        type: 'danger',
+        message: '保存到AI库失败'
+      }
+    }
+  } catch (error) {
+    console.error('自动保存到AI库失败:', error)
+    autoSaveStatus.value = {
+      type: 'danger',
+      message: '保存到AI库失败'
+    }
+  }
 }
 
 // 根据分类获取标签类型
@@ -251,6 +351,11 @@ const getCategoryText = (category) => {
 
 .result-tip {
   margin: 15px 0;
+}
+
+.auto-save-status {
+  margin-top: 20px;
+  text-align: center;
 }
 
 .ai-hint-card {

@@ -27,7 +27,11 @@
           <!-- 头像区域 -->
           <div class="top-section">
             <div class="avatar-box">
-              <el-avatar :size="200" :src="avatarUrl" class="avatar">
+              <el-avatar 
+                :size="200" 
+                :src="avatarUrl || undefined" 
+                class="avatar"
+              >
                 {{ form.name?.[0]?.toUpperCase() || 'U' }}
               </el-avatar>
               <div class="glow-ring"></div>
@@ -162,6 +166,15 @@
         </div>
       </el-card>
     </div>
+
+    <!-- 隐藏的文件选择器 -->
+    <input 
+      ref="fileInput" 
+      type="file" 
+      accept="image/*" 
+      style="display: none" 
+      @change="onFileSelected"
+    />
   </div>
 </template>
 
@@ -170,9 +183,9 @@ import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useUserStore } from '@/store/index'
 import { 
   User, Location, Flag, EditPen, Check, 
-  Camera, MagicStick, Clock, InfoFilled, Close, Edit
+  Camera, MagicStick, Clock, InfoFilled, Close
 } from '@element-plus/icons-vue'
-import { GetProfile, UpdateProfile } from '@/api/Home/index.js'
+import { GetProfile, UpdateProfile, UploadAvatar } from '@/api/Home/index.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const userStore = useUserStore()
@@ -191,12 +204,17 @@ const form = reactive({
 const originalForm = reactive({})
 const avatarUrl = ref('')
 const joinDate = ref('')
-const userInfoId = ref('') // 添加这一行来存储用户信息表的ID
+const userInfoId = ref('')
+
+// 文件输入引用
+const fileInput = ref(null)
+
+const originalAvatarUrl = ref('')
 
 const toggleEditMode = () => {
   isEditMode.value = true
-  // 保存原始数据
   Object.assign(originalForm, { ...form })
+  originalAvatarUrl.value = avatarUrl.value
 }
 
 const cancelEdit = () => {
@@ -205,42 +223,37 @@ const cancelEdit = () => {
     cancelButtonText: '继续编辑',
     type: 'warning',
   }).then(() => {
-    // 恢复原始数据
     Object.assign(form, { ...originalForm })
+    avatarUrl.value = originalAvatarUrl.value
     isEditMode.value = false
   }).catch(() => {})
 }
 
 const handleSave = async () => {
-  // 验证必填项
   if (!form.name || form.name.trim() === '') {
     ElMessage.warning('请输入昵称')
     return
   }
 
   saving.value = true
-
   try {
-    // 准备要发送的数据
     const profileData = {
-      id: userInfoId.value,  // 使用用户信息表的ID
-      userId: userStore.id,  // 用户ID
+      id: userInfoId.value,
+      userId: userStore.id,
       name: form.name,
       city: form.city || '',
       country: form.country || '',
-      avatar: ''
-    };
+      avatar: avatarUrl.value
+    }
 
-    // 调用更新接口
     const response = await UpdateProfile(profileData)
-    
-    // 更新 store
-    userStore.setName(form.name)
-    
+    // 更新store中的用户信息（包括姓名和头像）
+    userStore.updateUserInfo({
+      name: form.name,
+      avatar: avatarUrl.value
+    })
     ElMessage.success('保存成功')
     isEditMode.value = false
-    
-    // 更新原始数据
     Object.assign(originalForm, { ...form })
   } catch (err) {
     console.error('保存失败:', err)
@@ -250,12 +263,144 @@ const handleSave = async () => {
   }
 }
 
+// 👇 头像上传逻辑
 const handleAvatarClick = () => {
-  ElMessage.info('头像上传功能开发中～')
-  // TODO: 实现头像上传
+  if (isEditMode.value) {
+    fileInput.value?.click()
+  }
 }
 
-// 粒子背景
+// 压缩图片函数
+const compressImage = (file) => {
+  return new Promise((resolve, reject) => {
+    const targetSize = 5 * 1024 * 1024
+    
+    // 如果图片本身就小于目标大小，直接返回原图
+    if (file.size <= targetSize) {
+      resolve(file)
+      return
+    }
+    
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const img = new Image()
+    
+    // 启用图像平滑
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+    
+    img.onload = () => {
+      try {
+        // 计算目标尺寸
+        let width = img.width
+        let height = img.height
+        
+        // 更简单的缩放计算方式
+        const scaleRatio = Math.min(0.95, Math.sqrt(targetSize / file.size))
+        width = Math.floor(width * scaleRatio)
+        height = Math.floor(height * scaleRatio)
+        
+        // 确保最小尺寸（不低于200x200）
+        const minWidth = 200
+        const minHeight = 200
+        if (width < minWidth) {
+          const ratio = minWidth / width
+          width = minWidth
+          height = Math.floor(height * ratio)
+        }
+        if (height < minHeight) {
+          const ratio = minHeight / height
+          height = minHeight
+          width = Math.floor(width * ratio)
+        }
+        
+        canvas.width = width
+        canvas.height = height
+        
+        // 绘制图片
+        ctx.drawImage(img, 0, 0, width, height)
+        
+        // 单次压缩
+        const quality = Math.min(0.9, (targetSize / file.size) * 0.85)
+        
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error('图片压缩失败'))
+            return
+          }
+          
+          const fileName = file.name.replace(/\.[^/.]+$/, ".jpg")
+          let compressedFile = new File([blob], fileName, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          })
+          
+          // 返回压缩后的文件
+          resolve(compressedFile)
+        }, 'image/jpeg', quality)
+      } catch (error) {
+        reject(new Error(`压缩过程出错: ${error.message}`))
+      }
+    }
+    
+    img.onerror = () => {
+      reject(new Error('图片加载失败'))
+    }
+    
+    // 加载图片
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      img.src = e.target.result
+    }
+    reader.onerror = () => {
+      reject(new Error('文件读取失败'))
+    }
+    reader.readAsDataURL(file)
+  })
+}
+
+const onFileSelected = async (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+
+  if (!file.type.startsWith('image/')) {
+    ElMessage.error('请选择图片文件')
+    return
+  }
+
+  let processedFile = file
+  
+  try {
+    ElMessage.info('正在加载图片...')
+    processedFile = await compressImage(file)
+  } catch (error) {
+    console.error('图片压缩失败:', error)
+    ElMessage.error(`图片压缩失败: ${error.message || '未知错误'}`)
+    processedFile = file
+  }
+
+  const formData = new FormData()
+  formData.append('image', processedFile)
+
+  try {
+    const res = await UploadAvatar(formData)
+    if (res?.success && res?.data) {
+      // 更新头像URL用于预览
+      avatarUrl.value = res.data
+      ElMessage.success('头像上传成功')
+    } else {
+      throw new Error(res?.message || '上传失败')
+    }
+  } catch (err) {
+    console.error('头像上传失败:', err)
+    ElMessage.error('头像上传失败，请重试')
+  } finally {
+    // 重置 input，确保同一文件可重复上传
+    event.target.value = ''
+  }
+}
+
+// 粒子背景（保持不变）
 const initParticles = () => {
   const canvas = particleCanvas.value
   if (!canvas) return
@@ -311,24 +456,22 @@ const initParticles = () => {
   })
 }
 
+// 👇 页面加载：同时获取资料 + 头像
 onMounted(async () => {
   initParticles()
 
   try {
-    const res = await GetProfile({ userId: userStore.id })
-    if (res?.data) {
-      const d = res.data
+    // 1. 获取用户基本信息（包括头像）
+    const profileRes = await GetProfile({ userId: userStore.id })
+    if (profileRes?.data) {
+      const d = profileRes.data
       form.name = d.name || userStore.name || '环保用户'
       form.city = d.city || ''
       form.country = d.country || ''
-      userInfoId.value = d.id || '' // 保存用户信息表的ID
-      
-      // 保存原始数据
+      userInfoId.value = d.id || ''
+      avatarUrl.value = d.avatar || ''
       Object.assign(originalForm, { ...form })
-      
       userStore.setName(form.name)
-      
-      // 模拟加入日期
       joinDate.value = new Date().toLocaleDateString('zh-CN')
     }
   } catch (err) {
@@ -761,5 +904,4 @@ onMounted(async () => {
     flex-direction: column;
     text-align: center;
   }
-}
-</style>
+}</style>

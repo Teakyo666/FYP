@@ -6,9 +6,7 @@ import com.example.backend.Services.GarbageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import java.util.List;
-//import com.example.backend.POJO.Request.GarbageClassifyRequest;
+
 
 @RestController
 @RequestMapping("/home")
@@ -48,9 +46,4 @@ public class GarbageController {
         return garbageService.listGarbage(page, size, keyword, type);
     }
 
-
-//    @PostMapping("/classify")
-//    public Result classifyGarbage(@RequestParam String garbageName) {
-//        return garbageService.classifyGarbage(garbageName);
-//    }
 }

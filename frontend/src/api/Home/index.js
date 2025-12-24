@@ -16,11 +16,32 @@ export function GetProfile(data) {
     params: data,
   });
 }
+
 export function UpdateProfile(data) {
   return request({
     url: "userInfo/update",
     method: "post",
     data: data,
+  });
+}
+
+export function GetUserBehavior(data) {
+  return request({
+    url: "userInfo/avatar",
+    method: "get",
+    params: data,
+  });
+}
+
+// 上传头像API
+export function UploadAvatar(data) {
+  return request({
+    url: "userInfo/avatar",
+    method: "post",
+    data: data,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
   });
 }
 

@@ -10,49 +10,62 @@
         <id column="id" property="id"/> <!-- 主键映射 -->
         <result column="user_id" property="user_id"/>
         <result column="to_apply" property="to_apply"/>
+        <result column="reason" property="reason" jdbcType="LONGVARCHAR"/>
         <result column="status" property="status"/>
-        <result column="is_deleted" property="is_deleted"/>
     </resultMap>
 
     <!-- 新增申请记录 -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.ApplyDO">
         INSERT INTO apply (
-            id, user_id, to_apply, status, is_deleted
+            id, user_id, to_apply, reason, status
         ) VALUES (
-                     #{id}, #{user_id}, #{to_apply}, #{status}, #{is_deleted,jdbcType=BIT}
+                     #{id}, #{user_id}, #{to_apply}, #{reason}, #{status}
                  )
     </insert>
 
     <!-- 根据ID物理删除 -->
-    <delete id="deleteById" parameterType="java.lang.Long">
+    <delete id="deleteById" parameterType="java.lang.String">
         DELETE FROM apply WHERE id = #{id}
     </delete>
 
     <!-- 根据ID全字段更新 -->
-    <update id="updateById" parameterType="com.example.backend.POJO.DO.ApplyDO">
+    <update id="update" parameterType="com.example.backend.POJO.DO.ApplyDO">
         UPDATE apply
         SET
             user_id = #{user_id},
             to_apply = #{to_apply},
-            status = #{status},
-            is_deleted = #{is_deleted,jdbcType=BIT}
+            reason = #{reason},
+            status = #{status}
         WHERE id = #{id}
     </update>
 
     <!-- 根据ID查询（过滤已删除数据） -->
-    <select id="selectById" parameterType="java.lang.Long" resultMap="ApplyResultMap">
-        SELECT id, user_id, to_apply, status, is_deleted
+    <select id="selectById" parameterType="java.lang.String" resultMap="ApplyResultMap">
+        SELECT id, user_id, to_apply, reason, status
         FROM apply
         WHERE id = #{id}
-          AND is_deleted = 0
     </select>
 
-    <!-- 查询所有未删除的申请记录 -->
+    <!-- 查询所有申请记录 -->
     <select id="selectAll" resultMap="ApplyResultMap">
-        SELECT id, user_id, to_apply, status, is_deleted
+        SELECT id, user_id, to_apply, reason, status
         FROM apply
-        WHERE is_deleted = 0
+        ORDER BY id DESC
     </select>
-
+    
+    <!-- 条件查询申请记录 -->
+    <select id="selectByCondition" resultMap="ApplyResultMap">
+        SELECT id, user_id, to_apply, reason, status
+        FROM apply
+        <where>
+            <if test="to_apply != null and to_apply != ''">
+                AND to_apply = #{to_apply}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
 
 </mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 对应 Mapper 接口全路径 -->
+<mapper namespace="com.example.backend.Mappers.AIGenerateMapper">
+
+    <!-- 通用结果集映射（复用） -->
+    <resultMap id="AIGenerateMap" type="com.example.backend.POJO.DO.AIGenerateDO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="category" property="category"/>
+        <result column="title" property="title"/>
+        <result column="reason" property="reason" jdbcType="LONGVARCHAR"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!-- 1. 新增垃圾信息 -->
+    <insert id="insert" parameterType="com.example.backend.POJO.DO.AIGenerateDO">
+        INSERT INTO ai_generate (id, name, category, title, reason, status)
+        VALUES (#{id}, #{name}, #{category}, #{title}, #{reason}, #{status})
+    </insert>
+
+    <!-- 2. 根据ID查询单条 -->
+    <select id="selectById" parameterType="String" resultMap="AIGenerateMap">
+        SELECT id, name, category, title, reason, status
+        FROM ai_generate
+        WHERE id = #{id}
+    </select>
+
+    <!-- 3. 根据名称查询（用户名/垃圾名，按你的业务调整） -->
+    <select id="selectByName" parameterType="String" resultMap="AIGenerateMap">
+        SELECT id, name, category, title, reason, status
+        FROM ai_generate
+        WHERE name = #{name}
+    </select>
+
+    <!-- 4. 查询所有垃圾信息 -->
+    <select id="selectAll" resultMap="AIGenerateMap">
+        SELECT id, name, category, title, reason, status
+        FROM ai_generate
+        ORDER BY id DESC
+    </select>
+
+    <!-- 5. 带条件查询（用于分页） -->
+    <select id="selectWithConditions" resultMap="AIGenerateMap">
+        SELECT id, name, category, title, reason, status
+        FROM ai_generate
+        <where>
+            <if test="keyword != null and keyword.trim() != ''">
+                AND name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="type != null and type.trim() != ''">
+                AND category = #{type}
+            </if>
+            <if test="status != null and status.trim() != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <!-- 5. 全字段更新（非空判断，避免覆盖） -->
+    <update id="update" parameterType="com.example.backend.POJO.DO.AIGenerateDO">
+        UPDATE ai_generate
+        SET
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        <if test="category != null and category != ''">
+            category = #{category},
+        </if>
+        <if test="title != null and title != ''">
+            title = #{title},
+        </if>
+        <if test="reason != null and reason != ''">
+            reason = #{reason},
+        </if>
+        <if test="status != null and status != ''">
+            status = #{status}
+        </if>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 6. 根据ID删除 -->
+    <delete id="deleteById" parameterType="String">
+        DELETE FROM ai_generate WHERE id = #{id}
+    </delete>
+
+</mapper>

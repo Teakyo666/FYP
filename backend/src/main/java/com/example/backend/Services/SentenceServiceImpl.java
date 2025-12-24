@@ -76,7 +76,6 @@ public class SentenceServiceImpl implements SentenceService {
     
     @Override
     public Result listSentences(Integer page, Integer size, String sentence) {
-        // 设置默认值
         if (page == null || page <= 0) {
             page = 1;
         }
@@ -84,21 +83,16 @@ public class SentenceServiceImpl implements SentenceService {
             size = 10;
         }
 
-        // 开启分页
         PageHelper.startPage(page, size);
 
-        // 执行查询
         List<SentenceDO> sentenceList;
         if (sentence != null && !sentence.isEmpty()) {
             sentenceList = sentenceMapper.selectByCondition(sentence);
         } else {
             sentenceList = sentenceMapper.selectAll();
         }
-
-        // 获取分页信息
         PageInfo<SentenceDO> pageInfo = new PageInfo<>(sentenceList);
 
-        // 构造返回结果
         Map<String, Object> data = new HashMap<>();
         data.put("list", pageInfo.getList());
         data.put("total", pageInfo.getTotal());

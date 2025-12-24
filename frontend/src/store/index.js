@@ -4,7 +4,8 @@ export const useUserStore = defineStore("user", {
   state: () => ({
     role: localStorage.getItem("role") || "",
     id: localStorage.getItem("id") || "",
-    name: localStorage.getItem('name') || ''
+    name: localStorage.getItem('name') || '',
+    avatar: localStorage.getItem('avatar') || ''
   }),
 
   actions: {
@@ -17,6 +18,7 @@ export const useUserStore = defineStore("user", {
       localStorage.setItem("role", userInfo.role);
       localStorage.setItem("id", userInfo.id);
       localStorage.setItem('name', userInfo.name);
+      localStorage.setItem('avatar', userInfo.avatar || '');
     },
     
     // 退出登录：清空role和id
@@ -24,15 +26,20 @@ export const useUserStore = defineStore("user", {
       this.role = "";
       this.id = "";
       this.name = "";
+      this.avatar = "";
       localStorage.clear();
     },
 
-    //登录显示名称
-    setName(name) {
-      this.name = name
-      const user = JSON.parse(localStorage.getItem('user') || '{}')
-      user.name = name
-      localStorage.setItem('user', JSON.stringify(user))
-}
+    // 更新用户信息（包括头像）
+    updateUserInfo(userInfo) {
+      if (userInfo.name) {
+        this.name = userInfo.name;
+        localStorage.setItem('name', userInfo.name);
+      }
+      if (userInfo.avatar !== undefined) {
+        this.avatar = userInfo.avatar;
+        localStorage.setItem('avatar', userInfo.avatar);
+      }
+    }
   }
 });

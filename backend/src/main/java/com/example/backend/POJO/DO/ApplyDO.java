@@ -1,17 +1,17 @@
 package com.example.backend.POJO.DO;
 
 public class ApplyDO {
-    private Long id;
+    private String id;
     private String user_id;
     private String to_apply;
-    private int status;
-    private Boolean is_deleted;
+    private String reason;
+    private String status;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -31,19 +31,21 @@ public class ApplyDO {
         this.to_apply = to_apply;
     }
 
-    public int getStatus() {
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Boolean getIs_deleted() {
-        return is_deleted;
-    }
-
-    public void setIs_deleted(Boolean is_deleted) {
-        this.is_deleted = is_deleted;
-    }
 }
