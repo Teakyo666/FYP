@@ -2,16 +2,16 @@ package com.example.backend.units;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-// 这个工具类的作用：注册时加密密码（写入数据库前用）
+// This utility class is used to encrypt passwords during registration (before writing to database)
 public class PasswordToken {
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    // 加密：注册时调用，把明文密码加密成密文（写入数据库）
+    // Encrypt: called during registration, encrypts plain text password to cipher text (for writing to database)
     public static String encode(String rawPassword) {
         return encoder.encode(rawPassword);
     }
 
-    // 验证：后续登录时调用，比对明文密码和数据库中的密文是否匹配
+    // Verify: called during subsequent login, compares plain text password with cipher text in database
     public static boolean matches(String rawPassword, String encodedPassword) {
         return encoder.matches(rawPassword, encodedPassword);
     }

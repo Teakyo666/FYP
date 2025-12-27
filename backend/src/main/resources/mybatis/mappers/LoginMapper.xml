@@ -15,41 +15,41 @@
 
     <!-- 1. Add -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.LoginDO">
-        INSERT INTO login (id, username, password, role)
+        INSERT INTO user (id, username, password, role)
         VALUES (#{id}, #{username}, #{password}, #{role})
     </insert>
 
     <!-- 2. select by ID -->
     <select id="selectById" parameterType="String" resultMap="LoginBaseMap">
         SELECT id, username, password, role
-        FROM login
+        FROM user
         WHERE id = #{id}
     </select>
 
     <!-- 3. check from username -->
     <select id="selectByUsername" parameterType="String" resultMap="LoginBaseMap">
         SELECT id, username, password, role
-        FROM login
+        FROM user
         WHERE username = #{username}
     </select>
 
     <!-- 4. check all -->
     <select id="selectAll" resultMap="LoginBaseMap">
         SELECT id, username, password, role
-        FROM login
-        ORDER BY update_time DESC <!-- 按更新时间倒序 -->
+        FROM user
+        ORDER BY update_time DESC <!-- Order by update time descending -->
     </select>
 
-    <!-- 5. 条件查询（非空才拼接条件，避免 SQL 语法错误） -->
+    <!-- 5. Conditional query (only concatenate conditions when not null, to avoid SQL syntax errors) -->
     <select id="selectByCondition" resultMap="LoginBaseMap">
         SELECT id, username, password, role
-        FROM login
+        FROM user
         <where>
             <if test="username != null and username.trim() != ''">
-                AND username LIKE CONCAT('%', #{username}, '%') <!-- 模糊查询 -->
+                AND username LIKE CONCAT('%', #{username}, '%') <!-- Fuzzy query -->
             </if>
             <if test="role != null and role.trim() != ''">
-                AND role = #{role} <!-- 精确查询 -->
+                AND role = #{role} <!-- Exact query -->
             </if>
         </where>
         ORDER BY update_time DESC
@@ -57,7 +57,7 @@
 
     <!-- 6. update -->
     <update id="update" parameterType="com.example.backend.POJO.DO.LoginDO">
-        UPDATE login
+        UPDATE user
         <set>
             <if test="username != null and username.trim() != ''">username = #{username},</if>
             <if test="password != null and password.trim() != ''">password = #{password},</if>
@@ -68,7 +68,7 @@
 
     <!-- 7. delete by ID -->
     <delete id="deleteById" parameterType="String">
-        DELETE FROM login
+        DELETE FROM user
         WHERE id = #{id}
     </delete>
 

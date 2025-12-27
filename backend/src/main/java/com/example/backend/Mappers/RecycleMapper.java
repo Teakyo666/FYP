@@ -16,7 +16,6 @@ public interface RecycleMapper {
 
     RecycleDO selectById(@Param("id") String id);
 
-    // select by country and city
     List<RecycleDO> selectByCountryAndCity(@Param("country") String country, @Param("city") String city);
 
     List<RecycleDO> selectAll();

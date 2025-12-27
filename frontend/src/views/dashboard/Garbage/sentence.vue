@@ -1,56 +1,56 @@
 <template>
   <div class="sentence-management">
     <div class="header">
-      <h1>句子管理</h1>
-      <p>管理系统中的句子信息</p>
+      <h1>Sentence Management</h1>
+      <p>Manage sentence information in the system</p>
     </div>
 
-    <!-- 搜索和操作栏 -->
+    <!-- Search and operation bar -->
     <div class="toolbar">
       <el-row :gutter="20">
         <el-col :span="18">
           <el-input
             v-model="searchForm.sentence"
-            placeholder="请输入句子内容"
+            placeholder="Please enter sentence content"
             clearable
             style="width: 300px"
             @keyup.enter="handleSearch"
           >
             <template #append>
-              <el-button :icon="Search" @click="handleSearch">搜索</el-button>
+              <el-button :icon="Search" @click="handleSearch">Search</el-button>
             </template>
           </el-input>
-          <el-button style="margin-left: 10px" @click="clearSearch">清除搜索</el-button>
+          <el-button style="margin-left: 10px" @click="clearSearch">Clear Search</el-button>
         </el-col>
         <el-col :span="6" class="text-right">
-          <el-button type="primary" :icon="Plus" @click="handleAdd">新增句子</el-button>
+          <el-button type="primary" :icon="Plus" @click="handleAdd">Add Sentence</el-button>
         </el-col>
       </el-row>
     </div>
 
-    <!-- 数据表格 -->
+    <!-- Data table -->
     <div class="table-container">
       <el-table
         :data="tableData"
         v-loading="loading"
-        element-loading-text="加载中..."
+        element-loading-text="Loading..."
         border
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="sentence" label="句子" min-width="300" />
-        <el-table-column prop="createBy" label="创建人" width="200" />
-        <el-table-column prop="createDate" label="创建时间" width="200" />
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column prop="sentence" label="Sentence" min-width="300" />
+        <el-table-column prop="createBy" label="Creator" width="200" />
+        <el-table-column prop="createDate" label="Creation Time" width="200" />
+        <el-table-column label="Operations" width="200" fixed="right">
           <template #default="scope">
-            <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="small" @click="handleEdit(scope.row)">Edit</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <!-- 分页 -->
+    <!-- Pagination -->
     <div class="pagination-container">
       <el-pagination
         v-model:current-page="pagination.currentPage"
@@ -63,7 +63,7 @@
       />
     </div>
 
-    <!-- 编辑/新增对话框 -->
+    <!-- Edit/Add dialog -->
     <el-dialog
       v-model="dialogVisible"
       :title="dialogTitle"
@@ -76,19 +76,19 @@
         :rules="formRules"
         label-width="100px"
       >
-        <el-form-item label="句子内容" prop="sentence">
+        <el-form-item label="Sentence Content" prop="sentence">
           <el-input
             v-model="formData.sentence"
             type="textarea"
             :rows="4"
-            placeholder="请输入句子内容"
+            placeholder="Please enter sentence content"
           />
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="handleSubmit">Confirm</el-button>
         </span>
       </template>
     </el-dialog>
@@ -138,9 +138,9 @@ const formData = reactive({
   createDate: ''
 })
 
-// 表单验证规则
+// Form validation rules
 const formRules = {
-  sentence: [{ required: true, message: '请输入句子内容', trigger: 'blur' }]
+  sentence: [{ required: true, message: 'Please enter sentence content', trigger: 'blur' }]
 }
 
 // 表单引用
@@ -216,49 +216,49 @@ const fetchData = async () => {
   }
 }
 
-// 处理新增
+// Handle add
 const handleAdd = () => {
-  dialogTitle.value = '新增句子'
+  dialogTitle.value = 'Add Sentence'
   isEdit.value = false
   resetForm()
   dialogVisible.value = true
 }
 
-// 处理编辑
+// Handle edit
 const handleEdit = (row) => {
-  dialogTitle.value = '编辑句子'
+  dialogTitle.value = 'Edit Sentence'
   isEdit.value = true
-  // 仅复制需要的字段
+  // Only copy required fields
   formData.id = row.id
   formData.sentence = row.sentence
   dialogVisible.value = true
 }
 
-// 处理删除
+// Handle delete
 const handleDelete = (row) => {
   ElMessageBox.confirm(
-    `确定要删除句子 "${row.sentence.substring(0, 20)}${row.sentence.length > 20 ? '…' : ''}" 吗？`,
-    '删除确认',
+    `Are you sure you want to delete sentence "${row.sentence.substring(0, 20)}${row.sentence.length > 20 ? '…' : ''}"?`,
+    'Delete Confirmation',
     {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel',
       type: 'warning'
     }
   ).then(async () => {
     try {
       const response = await DeleteSentence({id: row.id})
       if (response.success) {
-        ElMessage.success('删除成功')
+        ElMessage.success('Deleted successfully')
         fetchData()
       } else {
-        ElMessage.error(response.message || '删除失败')
+        ElMessage.error(response.message || 'Failed to delete')
       }
     } catch (error) {
-      console.error('删除失败:', error)
-      ElMessage.error('删除失败')
+      console.error('Failed to delete:', error)
+      ElMessage.error('Failed to delete')
     }
   }).catch(() => {
-    // 用户取消删除
+    // User cancelled deletion
   })
 }
 
@@ -287,15 +287,15 @@ const handleSubmit = () => {
         }
         
         if (response.success) {
-          ElMessage.success(isEdit.value ? '更新成功' : '新增成功')
+          ElMessage.success(isEdit.value ? 'Update successful' : 'Add successful')
           dialogVisible.value = false
           fetchData()
         } else {
-          ElMessage.error(response.message || (isEdit.value ? '更新失败' : '新增失败'))
+          ElMessage.error(response.message || (isEdit.value ? 'Update failed' : 'Add failed'))
         }
       } catch (error) {
-        console.error('操作失败:', error)
-        ElMessage.error(isEdit.value ? '更新失败' : '新增失败')
+        console.error('Operation failed:', error)
+        ElMessage.error(isEdit.value ? 'Update failed' : 'Add failed')
       }
     }
   })
@@ -337,12 +337,12 @@ const getUserNameById = async (userId) => {
     // 使用 userId 参数调用 userInfo/get 接口
     const response = await GetProfile({ userId: userId })
     if (response && response.success && response.data) {
-      return response.data.name || '未知用户'
+      return response.data.name || 'Unknown User'
     }
-    return '未知用户'
+    return 'Unknown User'
   } catch (error) {
-    console.error('获取用户信息失败:', error)
-    return '未知用户'
+    console.error('Failed to get user info:', error)
+    return 'Unknown User'
   }
 }
 

@@ -14,7 +14,7 @@
         <result column="avatar" property="avatar"/>
     </resultMap>
 
-    <!-- 1. 新增用户信息 -->
+    <!-- 1. Insert user information -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.UserInfoDO">
         INSERT INTO user_info (
             id, name, user_id, city, country, avatar
@@ -23,27 +23,27 @@
                  )
     </insert>
 
-    <!-- 2. 根据 ID 查询 -->
+    <!-- 2. Query by ID -->
     <select id="selectById" parameterType="String" resultMap="UserInfoResultMap">
         SELECT id, name, user_id, city, country, avatar
         FROM user_info
         WHERE id = #{id}
     </select>
 
-    <!-- 3. 根据用户id（user_id）查询 -->
+    <!-- 3. Query by user id (user_id) -->
     <select id="selectByUserId" parameterType="String" resultMap="UserInfoResultMap">
         SELECT id, name, user_id, city, country, avatar
         FROM user_info
         WHERE user_id = #{user_id}
     </select>
 
-    <!-- 4. 查询所有 -->
+    <!-- 4. Query all -->
     <select id="selectAll" resultMap="UserInfoResultMap">
         SELECT id, name, user_id, city, country, avatar
         FROM user_info
     </select>
 
-    <!-- 5. 全字段更新（仅更新非空的DO字段） -->
+    <!-- 5. Update all fields (only update non-empty DO fields) -->
     <update id="update" parameterType="com.example.backend.POJO.DO.UserInfoDO">
         UPDATE user_info
         <set>
@@ -66,12 +66,12 @@
         WHERE id = #{id}
     </update>
 
-    <!-- 6. 根据ID删除 -->
+    <!-- 6. Delete by ID -->
     <delete id="deleteById" parameterType="String">
         DELETE FROM user_info WHERE id = #{id}
     </delete>
 
-    <!-- 7. 条件查询（支持姓名模糊查询） -->
+    <!-- 7. Conditional query (supports name fuzzy query) -->
     <select id="selectByCondition" parameterType="String" resultMap="UserInfoResultMap">
         SELECT id, name, user_id, city, country, avatar
         FROM user_info

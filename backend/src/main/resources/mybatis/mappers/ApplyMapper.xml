@@ -5,16 +5,16 @@
 
 <mapper namespace="com.example.backend.Mappers.ApplyMapper">
 
-    <!-- 结果集映射：数据库字段与DO属性的映射 -->
+    <!-- Result mapping: mapping database fields to DO properties -->
     <resultMap id="ApplyResultMap" type="com.example.backend.POJO.DO.ApplyDO">
-        <id column="id" property="id"/> <!-- 主键映射 -->
+        <id column="id" property="id"/> <!-- Primary key mapping -->
         <result column="user_id" property="user_id"/>
         <result column="to_apply" property="to_apply"/>
         <result column="reason" property="reason" jdbcType="LONGVARCHAR"/>
         <result column="status" property="status"/>
     </resultMap>
 
-    <!-- 新增申请记录 -->
+    <!-- Insert application record -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.ApplyDO">
         INSERT INTO apply (
             id, user_id, to_apply, reason, status
@@ -23,12 +23,12 @@
                  )
     </insert>
 
-    <!-- 根据ID物理删除 -->
+    <!-- Physical delete by ID -->
     <delete id="deleteById" parameterType="java.lang.String">
         DELETE FROM apply WHERE id = #{id}
     </delete>
 
-    <!-- 根据ID全字段更新 -->
+    <!-- Update all fields by ID -->
     <update id="update" parameterType="com.example.backend.POJO.DO.ApplyDO">
         UPDATE apply
         SET
@@ -39,21 +39,21 @@
         WHERE id = #{id}
     </update>
 
-    <!-- 根据ID查询（过滤已删除数据） -->
+    <!-- Query by ID (filtering deleted data) -->
     <select id="selectById" parameterType="java.lang.String" resultMap="ApplyResultMap">
         SELECT id, user_id, to_apply, reason, status
         FROM apply
         WHERE id = #{id}
     </select>
 
-    <!-- 查询所有申请记录 -->
+    <!-- Query all application records -->
     <select id="selectAll" resultMap="ApplyResultMap">
         SELECT id, user_id, to_apply, reason, status
         FROM apply
         ORDER BY id DESC
     </select>
     
-    <!-- 条件查询申请记录 -->
+    <!-- Conditional query application records -->
     <select id="selectByCondition" resultMap="ApplyResultMap">
         SELECT id, user_id, to_apply, reason, status
         FROM apply

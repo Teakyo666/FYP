@@ -2,17 +2,17 @@
   <div class="reset-password-page">
     <div class="reset-password-card">
       <div class="reset-password-header">
-        <h2 class="reset-password-title">重置密码</h2>
-        <p class="reset-password-subtitle">输入Token和新密码，完成密码重置</p>
+        <h2 class="reset-password-title">Reset Password</h2>
+        <p class="reset-password-subtitle">Enter Token and new password to complete password reset</p>
       </div>
 
       <form class="reset-password-form" @submit.prevent="handleResetPassword">
-        <!-- Token输入框：绑定resetToken -->
+        <!-- Token input: bind to resetToken -->
         <div class="form-item">
           <input
             type="text"
             v-model="resetForm.resetToken"
-            placeholder="请输入重置Token"
+            placeholder="Enter reset Token"
             class="reset-password-input"
             :class="{ 'input-focus': tokenFocus }"
             @focus="tokenFocus = true"
@@ -22,12 +22,12 @@
           <p class="error-msg" v-if="tokenError">{{ tokenError }}</p>
         </div>
 
-        <!-- 新密码输入框 -->
+        <!-- New password input -->
         <div class="form-item">
           <input
             type="password"
             v-model="resetForm.newPassword"
-            placeholder="请输入新密码（不少于6位）"
+            placeholder="Enter new password (at least 6 characters)"
             class="reset-password-input"
             :class="{ 'input-focus': passwordFocus }"
             @focus="passwordFocus = true"
@@ -39,7 +39,7 @@
 
         <button type="submit" class="reset-password-btn" :disabled="isLoading">
           <span v-if="isLoading" class="loading-spinner"></span>
-          确认重置密码
+          Confirm Password Reset
         </button>
       </form>
     </div>
@@ -54,55 +54,55 @@ import { resetPassword } from "@/api/login";
 const router = useRouter();
 const route = useRoute();
 
-// 表单字段：resetToken（匹配后端） + newPassword
+// Form fields: resetToken (match backend) + newPassword
 const resetForm = ref({
   resetToken: "",
   newPassword: "",
 });
 
-// 输入框聚焦状态
+// Input focus status
 const tokenFocus = ref(false);
 const passwordFocus = ref(false);
 
-// 错误提示
+// Error messages
 const tokenError = ref("");
 const passwordError = ref("");
 
-// 按钮加载状态
+// Button loading status
 const isLoading = ref(false);
 
-// 页面挂载：从路由参数token → 赋值给表单resetToken
+// On page mount: get token from route params → assign to form resetToken
 onMounted(() => {
-  // 路由参数是token，赋值给表单的resetToken
+  // Route parameter is token, assign to form's resetToken
   const routeToken = route.query.token;
   if (routeToken) {
-    resetForm.value.resetToken = routeToken; // 关键：把?token=xxx赋值给resetToken
-    console.log("从路由获取的Token：", routeToken); // 调试用，可删除
+    resetForm.value.resetToken = routeToken; // Key: assign ?token=xxx to resetToken
+    console.log("Token from route:", routeToken); // For debugging, can be removed
   } else {
-    alert("请先申请重置Token！");
+    alert("Please apply for a reset Token first!");
     router.push("/apply-token");
   }
 });
 
-// 表单校验：校验resetToken和newPassword
+// Form validation: validate resetToken and newPassword
 const validateForm = () => {
   let isValid = true;
   const { resetToken, newPassword } = resetForm.value;
 
-  // 校验resetToken
+  // Validate resetToken
   if (!resetToken.trim()) {
-    tokenError.value = "请输入重置Token";
+    tokenError.value = "Please enter reset Token";
     isValid = false;
   } else {
     tokenError.value = "";
   }
 
-  // 校验新密码
+  // Validate new password
   if (!newPassword.trim()) {
-    passwordError.value = "请输入新密码";
+    passwordError.value = "Please enter new password";
     isValid = false;
   } else if (newPassword.length < 6) {
-    passwordError.value = "新密码长度不少于6位";
+    passwordError.value = "New password must be at least 6 characters";
     isValid = false;
   } else {
     passwordError.value = "";
@@ -111,31 +111,31 @@ const validateForm = () => {
   return isValid;
 };
 
-// 重置密码核心逻辑：传resetToken（匹配后端）
+// Core password reset logic: pass resetToken (match backend)
 const handleResetPassword = async () => {
   try {
     if (!validateForm()) return;
     isLoading.value = true;
 
-    // 调用后端接口：传resetToken + newPassword（完全匹配后端要求）
+    // Call backend API: pass resetToken + newPassword (fully match backend requirements)
     const res = await resetPassword({
       resetToken: resetForm.value.resetToken,
       newPassword: resetForm.value.newPassword,
     });
 
     if (res.success) {
-      alert("密码重置成功！即将跳转到登录页～");
+      alert("Password reset successful! Redirecting to login page...");
       router.push("/login");
     } else {
-      alert(res.message || "Token无效或已过期，请重新申请！");
+      alert(res.message || "Token is invalid or expired, please apply again!");
     }
   } catch (error) {
-    console.error("重置密码错误详情：", error);
-    // 精准区分错误类型
+    console.error("Password reset error details:", error);
+    // Accurately distinguish error types
     if (error.message.includes("Network Error") || error.message.includes("timeout")) {
-      alert("网络异常，请检查后端是否启动！");
+      alert("Network error, please check if the backend is running!");
     } else {
-      alert(`重置密码失败：${error.message}`);
+      alert(`Password reset failed: ${error.message}`);
     }
   } finally {
     isLoading.value = false;
@@ -144,7 +144,7 @@ const handleResetPassword = async () => {
 </script>
 
 <style scoped>
-/* 样式部分保持不变，无需修改 */
+/* Reset password page styles */
 .reset-password-page {
   position: fixed !important;
   top: 0 !important;

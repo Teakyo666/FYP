@@ -1,70 +1,70 @@
 <template>
   <div class="user-management">
     <div class="header">
-      <h1>用户管理</h1>
-      <p>管理系统中的用户信息</p>
+      <h1>User Management</h1>
+      <p>Manage user information in the system</p>
     </div>
 
-    <!-- 搜索和操作栏 -->
+    <!-- Search and operation bar -->
     <div class="toolbar">
       <el-row :gutter="20">
         <el-col :span="18">
           <el-input
             v-model="searchForm.username"
-            placeholder="请输入用户名"
+            placeholder="Please enter username"
             clearable
             style="width: 300px"
             @keyup.enter="handleSearch"
           >
             <template #append>
-              <el-button :icon="Search" @click="handleSearch">搜索</el-button>
+              <el-button :icon="Search" @click="handleSearch">Search</el-button>
             </template>
           </el-input>
-          <el-button style="margin-left: 10px" @click="clearSearch">清除搜索</el-button>
+          <el-button style="margin-left: 10px" @click="clearSearch">Clear Search</el-button>
         </el-col>
         <el-col :span="6" class="text-right">
-          <el-button type="primary" :icon="Plus" @click="handleAdd">新增用户</el-button>
+          <el-button type="primary" :icon="Plus" @click="handleAdd">Add User</el-button>
         </el-col>
       </el-row>
     </div>
 
-    <!-- 数据表格 -->
+    <!-- Data table -->
     <div class="table-container">
       <el-table
         :data="tableData"
         v-loading="loading"
-        element-loading-text="加载中..."
+        element-loading-text="Loading..."
         border
         stripe
         style="width: 100%"
       >
         <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="username" label="用户名" min-width="150" />
-        <el-table-column prop="password" label="密码" min-width="150" />
-        <el-table-column prop="role" label="角色" width="120">
+        <el-table-column prop="username" label="Username" min-width="150" />
+        <el-table-column prop="password" label="Password" min-width="150" />
+        <el-table-column prop="role" label="Role" width="120">
           <template #default="scope">
             <el-tag :type="getRoleTagType(scope.row.role)">
               {{ getRoleText(scope.row.role) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="信息" width="100" fixed="right">
+        <el-table-column label="Information" width="100" fixed="right">
           <template #default="scope">
-            <el-button size="small" @click="handleViewInfo(scope.row)">查看</el-button>
+            <el-button size="small" @click="handleViewInfo(scope.row)">View</el-button>
           </template>
         </el-table-column>
 
-        <!-- 查看用户信息处理 -->
-        <el-table-column label="操作" width="150" fixed="right">
+        <!-- Handle user information viewing -->
+        <el-table-column label="Operations" width="150" fixed="right">
           <template #default="scope">
-            <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="small" @click="handleEdit(scope.row)">Edit</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <!-- 分页 -->
+    <!-- Pagination -->
     <div class="pagination-container">
       <el-pagination
         v-model:current-page="pagination.currentPage"
@@ -77,7 +77,7 @@
       />
     </div>
 
-    <!-- 编辑/新增对话框 -->
+    <!-- Edit/Add dialog -->
     <el-dialog
       v-model="dialogVisible"
       :title="dialogTitle"
@@ -90,33 +90,33 @@
         :rules="formRules"
         label-width="100px"
       >
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="formData.username" placeholder="请输入用户名" />
+        <el-form-item label="Username" prop="username">
+          <el-input v-model="formData.username" placeholder="Please enter username" />
         </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="formData.password" type="password" placeholder="请输入密码" />
+        <el-form-item label="Password" prop="password">
+          <el-input v-model="formData.password" type="password" placeholder="Please enter password" />
         </el-form-item>
-        <el-form-item label="角色" prop="role">
-          <el-select v-model="formData.role" placeholder="请选择角色" style="width: 100%">
-            <el-option label="管理员" value="admin" />
-            <el-option label="志愿者" value="volunteer" />
-            <el-option label="回收员" value="recycler" />
-            <el-option label="普通用户" value="customer" />
+        <el-form-item label="Role" prop="role">
+          <el-select v-model="formData.role" placeholder="Please select role" style="width: 100%">
+            <el-option label="Administrator" value="admin" />
+            <el-option label="Volunteer" value="volunteer" />
+            <el-option label="Recycler" value="recycler" />
+            <el-option label="Regular User" value="customer" />
           </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="handleSubmit">Confirm</el-button>
         </span>
       </template>
     </el-dialog>
 
-    <!-- 用户信息查看对话框 -->
+    <!-- User information viewing dialog -->
     <el-dialog
       v-model="infoDialogVisible"
-      title="用户信息详情"
+      title="User Information Details"
       width="500px"
       :close-on-click-modal="false"
     >
@@ -124,27 +124,27 @@
         label-width="80px"
         label-position="left"
       >
-        <el-form-item label="姓名">
+        <el-form-item label="Name">
           <span v-if="!isEditing">{{ userInfo.name }}</span>
           <el-input v-else v-model="userInfo.name" />
         </el-form-item>
-        <el-form-item label="城市">
+        <el-form-item label="City">
           <span v-if="!isEditing">{{ userInfo.city }}</span>
           <el-input v-else v-model="userInfo.city" />
         </el-form-item>
-        <el-form-item label="国家">
+        <el-form-item label="Country">
           <span v-if="!isEditing">{{ userInfo.country }}</span>
           <el-input v-else v-model="userInfo.country" />
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button v-if="!isEditing" @click="enableEditing">修改</el-button>
+          <el-button v-if="!isEditing" @click="enableEditing">Edit</el-button>
           <template v-else>
-            <el-button type="primary" @click="saveUserInfo">保存</el-button>
-            <el-button @click="cancelEditing">取消</el-button>
+            <el-button type="primary" @click="saveUserInfo">Save</el-button>
+            <el-button @click="cancelEditing">Cancel</el-button>
           </template>
-          <el-button @click="infoDialogVisible = false">关闭</el-button>
+          <el-button @click="infoDialogVisible = false">Close</el-button>
         </span>
       </template>
     </el-dialog>
@@ -163,31 +163,31 @@ import {
 } from '@/api/Users'
 import { GetProfile, UpdateProfile } from '@/api/Home'
 
-// 响应式数据
+// Reactive data
 const loading = ref(false)
 const dialogVisible = ref(false)
 const infoDialogVisible = ref(false)
 const dialogTitle = ref('')
 const isEdit = ref(false)
 const isEditing = ref(false)
-const currentUserInfo = ref({}) // 保存当前查看的用户信息
+const currentUserInfo = ref({}) // Save currently viewed user information
 
-// 表格数据
+// Table data
 const tableData = ref([])
 
-// 搜索表单
+// Search form
 const searchForm = reactive({
   username: ''
 })
 
-// 分页
+// Pagination
 const pagination = reactive({
   currentPage: 1,
   pageSize: 10,
   total: 0
 })
 
-// 表单数据
+// Form data
 const formData = reactive({
   id: '',
   username: '',
@@ -195,7 +195,7 @@ const formData = reactive({
   role: ''
 })
 
-// 用户信息数据
+// User information data
 const userInfo = reactive({
   id: '',
   username: '',
@@ -208,62 +208,62 @@ const userInfo = reactive({
   country: ''
 })
 
-// 表单验证规则
+// Form validation rules
 const formRules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-  role: [{ required: true, message: '请选择角色', trigger: 'change' }]
+  username: [{ required: true, message: 'Please enter username', trigger: 'blur' }],
+  password: [{ required: true, message: 'Please enter password', trigger: 'blur' }],
+  role: [{ required: true, message: 'Please select role', trigger: 'change' }]
 }
 
-// 表单引用
+// Form reference
 const formRef = ref()
 
-// 搜索处理
+// Search handler
 const handleSearch = () => {
   pagination.currentPage = 1
   fetchData()
 }
 
-// 清除搜索处理
+// Clear search handler
 const clearSearch = () => {
   searchForm.username = ''
   pagination.currentPage = 1
   fetchData()
 }
 
-// 查看用户信息处理
+// Handle user information viewing
 const handleViewInfo = async (row) => {
   try {
     const response = await GetProfile({ userId: row.id })
     if (response && response.success) {
-      // 保存当前用户信息
+      // Save current user information
       currentUserInfo.value = response.data || {}
       
-      // 设置需要显示的字段
+      // Set fields to display
       userInfo.name = (response.data && response.data.name) || ''
       userInfo.city = (response.data && response.data.city) || ''
       userInfo.country = (response.data && response.data.country) || ''
       
-      // 重置编辑状态
+      // Reset editing state
       isEditing.value = false
       
-      // 显示信息对话框
+      // Show information dialog
       infoDialogVisible.value = true
     } else {
-      ElMessage.error(response.message || '获取用户信息失败')
+      ElMessage.error(response.message || 'Failed to get user information')
     }
   } catch (error) {
-    console.error('获取用户信息失败:', error)
-    ElMessage.error('获取用户信息失败: ' + (error.message || '未知错误'))
+    console.error('Failed to get user information:', error)
+    ElMessage.error('Failed to get user information: ' + (error.message || 'Unknown error'))
   }
 }
 
-// 启用编辑模式
+// Enable editing mode
 const enableEditing = () => {
   isEditing.value = true
 }
 
-// 保存用户信息
+// Save user information
 const saveUserInfo = async () => {
   try {
     const response = await UpdateProfile({
@@ -274,59 +274,59 @@ const saveUserInfo = async () => {
     })
     
     if (response && response.success) {
-      ElMessage.success('用户信息更新成功')
+      ElMessage.success('User information updated successfully')
       isEditing.value = false
-      // 更新currentUserInfo中的数据
+      // Update data in currentUserInfo
       currentUserInfo.value.name = userInfo.value.name
       currentUserInfo.value.city = userInfo.value.city
       currentUserInfo.value.country = userInfo.value.country
-      // 可能还需要刷新用户列表或其他操作
+      // May need to refresh user list or other operations
     } else {
-      ElMessage.error(response.message || '更新失败')
+      ElMessage.error(response.message || 'Update failed')
     }
   } catch (error) {
-    console.error('更新用户信息失败:', error)
-    ElMessage.error('更新用户信息失败: ' + (error.message || '未知错误'))
+    console.error('Failed to update user information:', error)
+    ElMessage.error('Failed to update user information: ' + (error.message || 'Unknown error'))
   }
 }
 
-// 取消编辑
+// Cancel editing
 const cancelEditing = () => {
   isEditing.value = false
-  // 恢复原始数据
+  // Restore original data
   userInfo.value.name = currentUserInfo.value.name || ''
   userInfo.value.city = currentUserInfo.value.city || ''
   userInfo.value.country = currentUserInfo.value.country || ''
 }
 
-// 格式化标签显示名称
+// Format label display name
 const formatLabel = (key) => {
   const labelMap = {
-    'id': '用户ID',
-    'username': '用户名',
-    'role': '角色',
-    'name': '姓名',
-    'email': '邮箱',
-    'phone': '电话',
-    'address': '地址',
-    'city': '城市',
-    'country': '国家'
+    'id': 'User ID',
+    'username': 'Username',
+    'role': 'Role',
+    'name': 'Name',
+    'email': 'Email',
+    'phone': 'Phone',
+    'address': 'Address',
+    'city': 'City',
+    'country': 'Country'
   }
-  // 如果找不到对应的标签，则将键名转换为中文（首字母大写）
+  // If the corresponding label is not found, convert the key name to English (capitalize first letter)
   if (!labelMap[key]) {
-    // 尝试将驼峰命名转换为中文描述
+    // Try to convert camel case to English description
     const camelKey = key.replace(/([A-Z])/g, ' $1').trim();
     return camelKey.charAt(0).toUpperCase() + camelKey.slice(1);
   }
   return labelMap[key];
 }
 
-// 获取数据
+// Fetch data
 const fetchData = async () => {
   try {
     loading.value = true
     
-    // 调用获取用户列表的API，支持分页和搜索
+    // Call the API to get the user list, supporting pagination and search
     const params = {
       page: pagination.currentPage,
       size: pagination.pageSize,
@@ -336,7 +336,7 @@ const fetchData = async () => {
     const response = await UserList(params)
     
     if (response && response.success) {
-      // 确保数据结构正确
+      // Ensure data structure is correct
       if (response.data && typeof response.data === 'object') {
         tableData.value = Array.isArray(response.data.list) ? response.data.list : []
         pagination.total = typeof response.data.total === 'number' ? response.data.total : 0
@@ -347,71 +347,71 @@ const fetchData = async () => {
     } else {
       tableData.value = []
       pagination.total = 0
-      const errorMsg = response ? (response.message || '获取数据失败') : '服务器无响应'
+      const errorMsg = response ? (response.message || 'Failed to get data') : 'No response from server'
       ElMessage.error(errorMsg)
     }
   } catch (error) {
-    console.error('获取数据失败:', error)
-    ElMessage.error('获取数据失败: ' + (error.message || '未知错误'))
+    console.error('Failed to get data:', error)
+    ElMessage.error('Failed to get data: ' + (error.message || 'Unknown error'))
   } finally {
     loading.value = false
   }
 }
 
-// 处理新增
+// Handle add
 const handleAdd = () => {
-  dialogTitle.value = '新增用户'
+  dialogTitle.value = 'Add User'
   isEdit.value = false
   resetForm()
   dialogVisible.value = true
 }
 
-// 处理编辑
+// Handle edit
 const handleEdit = (row) => {
-  dialogTitle.value = '编辑用户'
+  dialogTitle.value = 'Edit User'
   isEdit.value = true
   Object.assign(formData, row)
-  // 清空密码字段，编辑时不强制修改密码
+  // Clear password field, no need to force password change when editing
   formData.password = ''
   dialogVisible.value = true
 }
 
-// 处理删除
+// Handle delete
 const handleDelete = (row) => {
   ElMessageBox.confirm(
-    `确定要删除用户 "${row.username}" 吗？`,
-    '删除确认',
+    `Are you sure you want to delete user "${row.username}"?`,
+    'Delete Confirmation',
     {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel',
       type: 'warning'
     }
   ).then(async () => {
     try {
       const response = await UserDelete({ Id: row.id })
       if (response.success) {
-        ElMessage.success('删除成功')
+        ElMessage.success('Deleted successfully')
         fetchData()
       } else {
-        ElMessage.error(response.message || '删除失败')
+        ElMessage.error(response.message || 'Deletion failed')
       }
     } catch (error) {
-      console.error('删除失败:', error)
-      ElMessage.error('删除失败')
+      console.error('Deletion failed:', error)
+      ElMessage.error('Deletion failed')
     }
   }).catch(() => {
-    // 用户取消删除
+    // User cancelled deletion
   })
 }
 
-// 提交表单
+// Submit form
 const handleSubmit = () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       try {
         let response
         if (isEdit.value) {
-          // 编辑 - 只发送必要的字段
+          // Edit - only send necessary fields
           const updateData = {
             Id: formData.id,
             username: formData.username,
@@ -421,7 +421,7 @@ const handleSubmit = () => {
           
           response = await UserUpdate(updateData)
         } else {
-          // 新增
+          // Add
           const createData = {
             username: formData.username,
             password: formData.password,
@@ -431,27 +431,27 @@ const handleSubmit = () => {
         }
         
         if (response.success) {
-          ElMessage.success(isEdit.value ? '更新成功' : '新增成功')
+          ElMessage.success(isEdit.value ? 'Updated successfully' : 'Added successfully')
           dialogVisible.value = false
           fetchData()
         } else {
-          ElMessage.error(response.message || (isEdit.value ? '更新失败' : '新增失败'))
+          ElMessage.error(response.message || (isEdit.value ? 'Update failed' : 'Add failed'))
         }
       } catch (error) {
-        console.error('操作失败:', error)
-        ElMessage.error(isEdit.value ? '更新失败' : '新增失败')
+        console.error('Operation failed:', error)
+        ElMessage.error(isEdit.value ? 'Update failed' : 'Add failed')
       }
     }
   })
 }
 
-// 关闭对话框前的处理
+// Handle dialog close
 const handleDialogClose = (done) => {
   resetForm()
   done()
 }
 
-// 重置表单
+// Reset form
 const resetForm = () => {
   Object.assign(formData, {
     id: '',
@@ -464,7 +464,7 @@ const resetForm = () => {
   }
 }
 
-// 分页相关方法
+// Pagination related methods
 const handleSizeChange = (val) => {
   pagination.pageSize = val
   fetchData()
@@ -475,7 +475,7 @@ const handleCurrentChange = (val) => {
   fetchData()
 }
 
-// 根据角色获取标签类型
+// Get tag type based on role
 const getRoleTagType = (role) => {
   const typeMap = {
     'admin': 'danger',
@@ -486,18 +486,18 @@ const getRoleTagType = (role) => {
   return typeMap[role] || 'info'
 }
 
-// 根据角色获取显示文本
+// Get display text based on role
 const getRoleText = (role) => {
   const roleMap = {
-    'admin': '管理员',
-    'volunteer': '志愿者',
-    'recycler': '回收员',
-    'customer': '普通用户'
+    'admin': 'Administrator',
+    'volunteer': 'Volunteer',
+    'recycler': 'Recycler',
+    'customer': 'Regular User'
   }
-  return roleMap[role] || '未知角色'
+  return roleMap[role] || 'Unknown Role'
 }
 
-// 组件挂载时获取数据
+// Fetch data when component mounts
 onMounted(() => {
   fetchData()
 })

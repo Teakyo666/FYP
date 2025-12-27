@@ -1,21 +1,21 @@
 <template>
   <div class="garbage-query">
     <div class="header">
-      <h1>垃圾分类查询</h1>
-      <p>输入垃圾名称，获取垃圾信息</p>
+      <h1>Garbage Classification Query</h1>
+      <p>Enter garbage name to get garbage information</p>
     </div>
     
     <div class="query-section">
       <el-input
         v-model="garbageName"
-        placeholder="请输入垃圾名称"
+        placeholder="Please enter garbage name"
         size="large"
         class="search-input"
         @keyup.enter="queryGarbage"
       >
         <template #append>
         <el-button :icon="Search" @click="queryGarbage" type="primary">
-          查询
+          Query
         </el-button>
       </template>
       </el-input>
@@ -23,16 +23,16 @@
     
     <div v-if="result" class="result-section">
       <el-card class="result-card">
-        <h2>查询结果</h2>
+        <h2>Query Results</h2>
         <div class="result-content">
-          <p><strong>垃圾名称：</strong>{{ result.name }}</p>
-          <p><strong>分类：</strong>
+          <p><strong>Garbage Name:</strong>{{ result.name }}</p>
+          <p><strong>Category:</strong>
             <el-tag :type="getTagType(result.category)" size="large">
               {{ getCategoryText(result.category) }}
             </el-tag>
           </p>
-          <p><strong>分类原因：</strong>{{ result.reason }}</p>
-          <p><strong>处理建议：</strong></p>
+          <p><strong>Classification Reason:</strong>{{ result.reason }}</p>
+          <p><strong>Tips:</strong></p>
           <el-alert
             :title="result.title"
             type="info"
@@ -40,14 +40,14 @@
             class="result-tip"
           />
         </div>
-        <!-- 显示自动保存状态 -->
+        <!-- Display auto-save status -->
         <div class="auto-save-status" v-if="autoSaveStatus">
           <el-tag :type="autoSaveStatus.type">{{ autoSaveStatus.message }}</el-tag>
         </div>
       </el-card>
     </div>
     
-    <!-- 未找到结果时的AI提示 -->
+    <!-- AI hint when no results found -->
     <div v-if="showAIHint && !result && !loading" class="ai-hint-card">
       <el-alert
         :title="notFoundMessage"
@@ -63,7 +63,7 @@
               :icon="MagicStick" 
               @click="queryByAI"
             >
-              询问AI
+              Ask AI
             </el-button>
           </div>
         </template>
@@ -84,9 +84,9 @@
       </el-skeleton>
     </div>
     
-    <!-- 常见垃圾分类示例 -->
+    <!-- Common garbage classification examples -->
     <div class="examples-section">
-      <h2>常见垃圾分类示例</h2>
+      <h2>Common Garbage Classification Examples</h2>
       <el-row :gutter="20">
         <el-col :span="12" v-for="item in examples" :key="item.name">
           <el-card class="example-card" shadow="hover">
@@ -118,20 +118,20 @@ const notFoundMessage = ref('')
 const showAIHint = ref(false)
 const autoSaveStatus = ref(null) // 自动保存状态
 
-// 常见垃圾分类示例
+// Common garbage classification examples
 const examples = ref([
-  { name: '废纸箱', category: '可回收物' },
-  { name: '废电池', category: '有害垃圾' },
-  { name: '剩菜剩饭', category: '湿垃圾' },
-  { name: '烟蒂', category: '干垃圾' },
-  { name: '塑料瓶', category: '可回收物' },
-  { name: '过期药品', category: '有害垃圾' }
+  { name: 'Cardboard', category: 'Recyclable' },
+  { name: 'Used Battery', category: 'Hazardous Waste' },
+  { name: 'Leftover Food', category: 'Wet Waste' },
+  { name: 'Cigarette Butt', category: 'Dry Waste' },
+  { name: 'Plastic Bottle', category: 'Recyclable' },
+  { name: 'Expired Medicine', category: 'Hazardous Waste' }
 ])
 
-// 查询垃圾分类
+// Query garbage classification
 const queryGarbage = async () => {
   if (!garbageName.value.trim()) {
-    ElMessage.warning('请输入垃圾名称')
+    ElMessage.warning('Please enter garbage name')
     return
   }
   
@@ -139,34 +139,34 @@ const queryGarbage = async () => {
     loading.value = true
     result.value = null
     
-    // 调用API查询垃圾分类
+    // Call API to query garbage classification
     const response = await Garbage({ garbageName: garbageName.value.trim() })
     
     if (response.success) {
       result.value = response.data
-      ElMessage.success('查询成功')
-      // 隐藏AI提示
+      ElMessage.success('Query successful')
+      // Hide AI hint
       showAIHint.value = false
     } else {
-      const errorMsg = response.message || '未找到该垃圾的分类信息'
+      const errorMsg = response.message || 'Classification information for this garbage not found'
       
-      // 显示AI查询提示
+      // Show AI query hint
       notFoundMessage.value = errorMsg
       showAIHint.value = true
     }
   } catch (error) {
-    // 不再显示网络异常提示，直接显示AI查询提示
-    notFoundMessage.value = '未找到该垃圾的分类信息，你可以尝试询问AI'
+    // No longer show network exception message, directly show AI query hint
+    notFoundMessage.value = 'Classification information for this garbage not found, you can try asking AI'
     showAIHint.value = true
   } finally {
     loading.value = false
   }
 }
 
-// AI查询垃圾分类
+// AI query for garbage classification
 const queryByAI = async () => {
   if (!garbageName.value.trim()) {
-    ElMessage.warning('请输入垃圾名称')
+    ElMessage.warning('Please enter garbage name')
     return
   }
   
@@ -174,126 +174,126 @@ const queryByAI = async () => {
     loading.value = true
     autoSaveStatus.value = null
     
-    // 调用AI API进行垃圾分类查询
+    // Call AI API for garbage classification query
     const responseData = await runGarbageClassification(garbageName.value.trim())
     
-    // 显示通知，说明AI查询正在进行
+    // Show notification indicating AI query is in progress
     ElNotification({
-      title: 'AI查询',
-      message: `正在通过AI模型分析"${garbageName.value}"的分类信息...`,
+      title: 'AI Query',
+      message: `Analyzing classification information for "${garbageName.value}" using AI model...`,
       type: 'info',
       duration: 3000
     })
     
-    // 简化响应处理 - 直接从API响应中提取数据
+    // Simplified response handling - extract data directly from API response
     let outputData = null
     
-    // 处理新API的响应格式
+    // Process new API response format
     if (responseData && responseData.choices && responseData.choices.length > 0) {
       const choice = responseData.choices[0]
       if (choice.messages && choice.messages.content) {
-        // 提取内容
+        // Extract content
         const content = choice.messages.content.msg || choice.messages.content
         
-        // 如果是字符串，尝试解析为JSON
+        // If it's a string, try to parse as JSON
         if (typeof content === 'string') {
           try {
             const parsed = JSON.parse(content)
-            // 检查是否有answer字段
+            // Check if there's an answer field
             outputData = parsed.answer || parsed
           } catch (e) {
-            // 如果不是JSON，直接使用原始内容
+            // If it's not JSON, use the raw content directly
             outputData = {
-              type: '未知分类',
-              disadv: '无分类原因说明',
+              type: 'Unknown Category',
+              disadv: 'No classification reason provided',
               title: content
             }
           }
         } else {
-          // 如果已经是对象，直接使用
+          // If it's already an object, use directly
           outputData = content
         }
       }
     }
     
     if (outputData) {
-      // 映射字段
+      // Map fields
       result.value = {
         name: garbageName.value,
-        category: outputData.type || '未知分类',
-        reason: outputData.disadv || '无分类原因说明',
-        title: outputData.title || outputData.content || '无处理建议'
+        category: outputData.type || 'Unknown Category',
+        reason: outputData.disadv || 'No classification reason provided',
+        title: outputData.title || outputData.content || 'No handling suggestions'
       }
       
-      // 自动保存到AI库
+      // Auto-save to AI library
       await autoSaveToAILibrary(result.value)
       
-      ElMessage.success('AI查询完成')
+      ElMessage.success('AI query completed')
     } else {
-      ElMessage.error('AI查询失败：未能解析响应数据')
+      ElMessage.error('AI query failed: Failed to parse response data')
     }
     
     loading.value = false
   } catch (error) {
-    console.error('AI查询失败:', error)
-    ElMessage.error('AI查询失败: ' + (error.message || '未知错误'))
+    console.error('AI query failed:', error)
+    ElMessage.error('AI query failed: ' + (error.message || 'Unknown error'))
     loading.value = false
   }
 }
 
-// 自动保存到AI库的功能
+// Auto-save to AI library functionality
 const autoSaveToAILibrary = async (resultData) => {
   if (!resultData) {
     return
   }
   
   try {
-    // 准备要保存的数据
+    // Prepare data to be saved
     const aiData = {
       name: resultData.name,
       category: resultData.category,
       reason: resultData.reason,
       title: resultData.title,
-      status: '待审核'
+      status: 'pending'
     }
     
-    // 调用API保存到AI库
+    // Call API to save to AI library
     const response = await AIGarbage(aiData)
     
     if (response.success) {
       autoSaveStatus.value = {
         type: 'success',
-        message: '此内容为AI生成'
+        message: 'This content is AI-generated'
       }
     } else {
       autoSaveStatus.value = {
         type: 'danger',
-        message: '保存到AI库失败'
+        message: 'Failed to save to AI library'
       }
     }
   } catch (error) {
-    console.error('自动保存到AI库失败:', error)
+    console.error('Auto-save to AI library failed:', error)
     autoSaveStatus.value = {
       type: 'danger',
-      message: '保存到AI库失败'
+      message: 'Failed to save to AI library'
     }
   }
 }
 
-// 根据分类获取标签类型
+// Get tag type based on category
 const getTagType = (category) => {
   const typeMap = {
-    '可回收物': 'success',
-    '有害垃圾': 'danger',
-    '湿垃圾': 'warning',
-    '干垃圾': 'info'
+    'Recyclable': 'success',
+    'Hazardous Waste': 'danger',
+    'Wet Waste': 'warning',
+    'Dry Waste': 'info'
   }
   return typeMap[category] || 'info'
 }
 
-// 根据分类获取显示文本
+// Get display text based on category
 const getCategoryText = (category) => {
-  return category || '未知分类'
+  return category || 'Unknown Category'
 }
 </script>
 

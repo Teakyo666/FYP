@@ -59,24 +59,20 @@ public class GarbageServiceImpl implements GarbageService {
 
     @Override
     public Result listGarbage(int page, int size, String keyword, String type) {
-        // 参数验证
+
         if (page <= 0) page = 1;
         if (size <= 0) size = 10;
         if (size > 50) size = 50;
-        
-        // 使用PageHelper进行分页
+
         PageHelper.startPage(page, size);
-        
-        // 执行查询
+
         List<GarbageDO> garbages = garbageMapper.selectWithConditions(
             (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null,
             (type != null && !type.trim().isEmpty()) ? type.trim() : null
         );
-        
-        // 获取分页信息
+
         PageInfo<GarbageDO> pageInfo = new PageInfo<>(garbages);
-        
-        // 构造返回结果
+
         Map<String, Object> data = new HashMap<>();
         data.put("list", pageInfo.getList());
         data.put("total", pageInfo.getTotal());

@@ -1,39 +1,39 @@
 <!-- src/views/dashboard/Home.vue -->
 <template>
   <div class="home-dashboard">
-    <!-- Hero 区域 -->
+    <!-- Hero section -->
     <div class="hero-wrapper">
       <div class="hero-bg"></div>
       <canvas ref="flowCanvas" class="flow-canvas"></canvas>
       
-      <!-- 顶部装饰条 -->
+      <!-- Top decoration bar -->
       <div class="hero-top-bar">
         <div class="top-bar-item">
           <el-icon class="pulse-icon"><RefreshRight /></el-icon>
-          <span class="top-bar-text">垃圾分类 · 循环新生</span>
+          <span class="top-bar-text">Waste Sorting · Circular Renewal</span>
         </div>
         <div class="top-bar-badge">
           <span class="badge-dot"></span>
-          <span>实时在线</span>
+          <span>Online</span>
         </div>
       </div>
 
-      <!-- 中央内容 -->
+      <!-- Central content -->
       <div class="hero-content">
         <div class="hero-label">
           <el-icon><Sunny /></el-icon>
-          <span>今日环保格言</span>
+          <span>Today's Environmental Quote</span>
         </div>
         <div class="hero-sentence">
-          {{ cardSentence || '正在加载今日环保语录...' }}
+          {{ cardSentence || 'Loading today\'s environmental quote...' }}
         </div>
         <div class="hero-footer">
-          <el-icon><TrophyBase /></el-icon>
-          <span>环保从分类开始，让地球更美好</span>
-        </div>
+            <el-icon><TrophyBase /></el-icon>
+            <span>Environmental protection starts with sorting, making the Earth more beautiful</span>
+          </div>
       </div>
 
-      <!-- 浮动装饰元素 -->
+      <!-- Floating decorative elements -->
       <div class="floating-elements">
         <div class="float-circle circle-1"></div>
         <div class="float-circle circle-2"></div>
@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <!-- 信息卡片区 -->
+    <!-- Information cards section -->
     <el-row :gutter="24" class="stats-row">
       <el-col :xs="24" :sm="12" :md="8">
         <div class="data-card time-card">
@@ -49,12 +49,12 @@
             <el-icon><Clock /></el-icon>
           </div>
           <div class="card-content">
-            <div class="card-header">当前时间</div>
+            <div class="card-header">Current Time</div>
             <div class="card-value">{{ currentTime }}</div>
             <div class="card-footer">
               <el-tag type="success" effect="plain" size="small">
                 <el-icon><CircleCheck /></el-icon>
-                系统运行正常
+                System Running Normally
               </el-tag>
             </div>
           </div>
@@ -68,11 +68,11 @@
             <el-icon><Calendar /></el-icon>
           </div>
           <div class="card-content">
-            <div class="card-header">世界地球日</div>
+            <div class="card-header">Earth Day</div>
             <div class="card-value countdown">{{ daysToEarthDay }}</div>
             <div class="card-sub">
               <el-icon><Bell /></el-icon>
-              每年 4月22日
+              Every April 22
             </div>
           </div>
           <div class="card-decoration earth-decoration"></div>
@@ -86,11 +86,11 @@
           </div>
           <div class="card-content">
             <div class="card-header">
-              <span>垃圾分类小贴士</span>
+              <span>Waste Sorting Tips</span>
               <el-icon class="refresh-icon"><Refresh /></el-icon>
             </div>
             <div class="card-tip">{{ tip }}</div>
-            <div class="card-hint">点击刷新更多贴士</div>
+            <div class="card-hint">Click to refresh more tips</div>
           </div>
           <div class="card-decoration tip-decoration"></div>
         </div>
@@ -116,14 +116,14 @@ const flowCanvas = ref(null)
 let animationId = null
 
 const tips = [
-  '干湿要分离，厨余不油腻',
-  '电池、灯管、药品 → 有害垃圾（红色桶）',
-  '纸巾、陶瓷、烟头 → 其他垃圾（灰色桶）',
-  '塑料瓶需压扁，瓶盖分开投',
-  '快递纸箱请折叠后投可回收（蓝色桶）',
-  '奶茶杯清洗后属于可回收物',
-  '带饭菜的外卖盒 → 其他垃圾',
-  '破碎玻璃请用纸包好再投放'
+  'Separate wet and dry waste, kitchen waste should not be oily',
+  'Batteries, light tubes, medicines → Hazardous waste (red bin)',
+  'Tissues, ceramics, cigarette butts → Other waste (gray bin)',
+  'Plastic bottles should be flattened, caps disposed separately',
+  'Delivery cardboard boxes should be folded before disposal (blue bin)',
+  'Milk tea cups belong to recyclables after cleaning',
+  'Takeout containers with food → Other waste',
+  'Broken glass should be wrapped in paper before disposal'
 ]
 
 const calculateDaysToEarthDay = () => {
@@ -205,9 +205,9 @@ const initFlowParticles = () => {
 onMounted(async () => {
   try {
     const res = await sentence({})
-    cardSentence.value = (res?.success && res?.data?.sentence) ? res.data.sentence : '垃圾分类，人人有责'
+    cardSentence.value = (res?.success && res?.data?.sentence) ? res.data.sentence : 'Waste sorting, everyone\'s responsibility'
   } catch {
-    cardSentence.value = '垃圾分类，从我做起'
+    cardSentence.value = 'Waste sorting starts with me'
   }
 
   tip.value = tips[Math.floor(Math.random() * tips.length)]

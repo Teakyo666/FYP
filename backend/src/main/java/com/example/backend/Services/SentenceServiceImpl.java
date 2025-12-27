@@ -55,22 +55,15 @@ public class SentenceServiceImpl implements SentenceService {
 
     public Result findSentence() {
         Result result = new Result();
-        Random random = new Random();
-        int currentMax = 101;
-        SentenceDO sentenceDO = null;
-        int minMax = 1;
-        Long randomId = (long) random.nextInt(currentMax);
-        sentenceDO = sentenceMapper.selectById(randomId);
-
-        while (sentenceDO == null && currentMax > minMax) {
-            currentMax = randomId.intValue() + 1;
-            randomId = (long) random.nextInt(currentMax);
-            sentenceDO = sentenceMapper.selectById(randomId);
+        SentenceDO sentenceDO = sentenceMapper.selectRandomByJump();
+        if (sentenceDO == null) {
+            result.setSuccess(Boolean.FALSE);
+            result.setMessage("No sentences available");
+        } else {
+            result.setSuccess(Boolean.TRUE);
+            result.setMessage("Find sentence success");
+            result.setData(sentenceDO);
         }
-
-        result.setSuccess(Boolean.TRUE);
-        result.setMessage("find sentence success");
-        result.setData(sentenceDO);
         return result;
     }
     
@@ -102,7 +95,7 @@ public class SentenceServiceImpl implements SentenceService {
         Result result = new Result();
         result.setData(data);
         result.setSuccess(true);
-        result.setMessage("获取句子列表成功");
+        result.setMessage("Successfully obtained the list of sentences");
         return result;
     }
 }

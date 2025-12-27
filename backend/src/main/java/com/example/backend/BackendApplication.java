@@ -20,8 +20,8 @@ public class BackendApplication {
     public ApplicationListener<ApplicationReadyEvent> startupSuccessListener() {
         return event -> {
             System.out.println("=====================================");
-            System.out.println("🎉 项目启动成功！");
-            System.out.println("📌 访问地址：http://localhost:8080");
+            System.out.println("🎉 Project started successfully!");
+            System.out.println("📌 Access address: http://localhost:8080");
             System.out.println("=====================================");
         };
     }

@@ -5,7 +5,7 @@
 
 <mapper namespace="com.example.backend.Mappers.RecycleMapper">
 
-    <!-- 结果集映射：数据库字段 → DO属性（显式映射，避免歧义） -->
+    <!-- Result mapping: Database fields → DO properties (explicit mapping to avoid ambiguity) -->
     <resultMap id="RecycleResultMap" type="com.example.backend.POJO.DO.RecycleDO">
         <id column="id" property="id"/>
         <result column="country" property="country"/>
@@ -16,7 +16,7 @@
         <result column="description" property="describe"/>
     </resultMap>
 
-    <!-- 插入 -->
+    <!-- Insert -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.RecycleDO">
         INSERT INTO recycle_place (
             id,
@@ -37,12 +37,12 @@
                  )
     </insert>
 
-    <!-- 删除 -->
+    <!-- Delete -->
     <delete id="deleteById" parameterType="java.lang.String">
         DELETE FROM recycle_place WHERE id = #{id}
     </delete>
 
-    <!-- 更新 -->
+    <!-- Update -->
     <update id="update" parameterType="com.example.backend.POJO.DO.RecycleDO">
         UPDATE recycle_place
         SET
@@ -55,21 +55,21 @@
         WHERE id = #{id}
     </update>
 
-    <!-- 根据ID查询 -->
+    <!-- Query by ID -->
     <select id="selectById" parameterType="java.lang.String" resultMap="RecycleResultMap">
         SELECT id, country, city, address, name, user_id, description
         FROM recycle_place
         WHERE id = #{id}
     </select>
 
-    <!-- 查询所有 -->
+    <!-- Query all -->
     <select id="selectAll" resultMap="RecycleResultMap">
         SELECT id, country, city, address, name, user_id, description
         FROM recycle_place
         ORDER BY id DESC
     </select>
 
-    <!-- 条件查询（按名称模糊查） -->
+    <!-- Conditional query (fuzzy search by name) -->
     <select id="selectByCondition" parameterType="java.lang.String" resultMap="RecycleResultMap">
         SELECT id, country, city, address, name, user_id, description
         FROM recycle_place
@@ -81,7 +81,7 @@
         ORDER BY id DESC
     </select>
 
-    <!-- 按国家和城市查询 -->
+    <!-- Query by country and city -->
     <select id="selectByCountryAndCity" resultMap="RecycleResultMap">
         SELECT id, country, city, address, name, user_id, description
         FROM recycle_place

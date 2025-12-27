@@ -2,18 +2,18 @@
   <div class="apply-token-page">
     <div class="apply-token-card">
       <div class="apply-token-header">
-        <h2 class="apply-token-title">申请重置密码Token</h2>
-        <p class="apply-token-subtitle">输入注册邮箱，获取重置密码凭证</p>
+        <h2 class="apply-token-title">Request Password Reset Token</h2>
+        <p class="apply-token-subtitle">Enter your registered email to get a password reset token</p>
       </div>
 
-      <!-- 申请Token表单 -->
+      <!-- Request Token form -->
       <form class="apply-token-form" @submit.prevent="handleApplyToken">
-        <!-- 邮箱输入框 -->
+        <!-- Email input -->
         <div class="form-item">
           <input
             type="email"
             v-model="tokenForm.email"
-            placeholder="请输入注册邮箱"
+            placeholder="Enter registered email"
             class="apply-token-input"
             :class="{ 'input-focus': emailFocus }"
             @focus="emailFocus = true"
@@ -23,10 +23,10 @@
           <p class="error-msg" v-if="emailError">{{ emailError }}</p>
         </div>
 
-        <!-- 申请Token按钮 -->
+        <!-- Request Token button -->
         <button type="submit" class="apply-token-btn" :disabled="isLoading">
           <span v-if="isLoading" class="loading-spinner"></span>
-          申请重置Token
+          Request Reset Token
         </button>
       </form>
     </div>
@@ -36,37 +36,37 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-// 导入申请Token接口（在login.js中扩展）
+// Import request token API (expanded in login.js)
 import { applyToken } from "@/api/login";
 
 const router = useRouter();
 
-// 表单数据：仅邮箱
+// Form data: only email
 const tokenForm = ref({
   email: "",
 });
 
-// 输入框聚焦状态（动效控制）
+// Input focus status (animation control)
 const emailFocus = ref(false);
 
-// 表单错误提示
+// Form error messages
 const emailError = ref("");
 
-// 按钮加载状态
+// Button loading status
 const isLoading = ref(false);
 
-// 表单校验（仅校验邮箱）
+// Form validation (only validate email)
 const validateForm = () => {
   let isValid = true;
   const { email } = tokenForm.value;
 
-  // 邮箱格式校验
+  // Email format validation
   const emailReg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!email.trim()) {
-    emailError.value = "请输入注册邮箱";
+    emailError.value = "Please enter registered email";
     isValid = false;
   } else if (!emailReg.test(email)) {
-    emailError.value = "请输入有效的邮箱格式（例：xxx@xxx.com）";
+    emailError.value = "Please enter a valid email format (e.g., xxx@xxx.com)";
     isValid = false;
   } else {
     emailError.value = "";
@@ -75,50 +75,50 @@ const validateForm = () => {
   return isValid;
 };
 
-// 核心：申请Token逻辑（仅修改跳转参数：email→token）
+// Core: Request token logic (only modify redirect parameter: email→token)
 const handleApplyToken = async () => {
   try {
-    // 1. 前端表单校验
+    // 1. Frontend form validation
     if (!validateForm()) return;
 
-    // 2. 显示加载状态
+    // 2. Show loading status
     isLoading.value = true;
 
-    // 3. 调用后端申请Token接口（传邮箱）
+    // 3. Call backend request token API (pass email)
     const res = await applyToken({
-      username: tokenForm.value.email, // 后端接收字段名（和注册一致）
+      username: tokenForm.value.email, // Backend receiving field name (consistent with registration)
     });
 
-    // 4. 接口成功：提取token并跳转（核心修改：传token而非email）
+    // 4. API success: extract token and redirect (core modification: pass token instead of email)
     if (res.success) {
-      // 提取后端返回的token
+      // Extract token returned by backend
       const token = res.data?.token;
       if (!token) {
-        alert("Token申请失败：后端未返回重置凭证！");
+        alert("Token request failed: Backend did not return reset token!");
         isLoading.value = false;
         return;
       }
-      alert("Token申请成功！即将跳转到重置密码页～");
-      // 跳转并携带token参数（替换原来的email参数）
+      alert("Token request successful! Redirecting to password reset page～");
+      // Redirect and carry token parameter (replace the original email parameter)
       router.push({
         path: "/reset-password",
-        query: { token: token }, // 关键修改：传token
+        query: { token: token }, // Key modification: pass token
       });
     } else {
-      alert(res.message || "Token申请失败，请检查邮箱是否正确！");
+      alert(res.message || "Token request failed, please check if the email is correct!");
     }
   } catch (error) {
-    console.error("申请Token接口调用失败：", error);
-    alert("网络异常，请检查后端是否启动！");
+    console.error("Request token API call failed:", error);
+    alert("Network error, please check if the backend is running!");
   } finally {
-    // 关闭加载状态
+    // Close loading status
     isLoading.value = false;
   }
 };
 </script>
 
 <style scoped>
-/* 样式完全保留，无任何修改 */
+/* Styles completely retained, no modifications */
 .apply-token-page {
   position: fixed !important;
   top: 0 !important;
@@ -135,7 +135,7 @@ const handleApplyToken = async () => {
   overflow: hidden;
 }
 
-/* 背景装饰点（增加层次感） */
+/* Background decoration dots (add depth) */
 .apply-token-page::before {
   content: "";
   position: absolute;
@@ -159,7 +159,7 @@ const handleApplyToken = async () => {
   filter: blur(60px);
 }
 
-/* 卡片容器（悬浮质感） */
+/* Card container (floating texture) */
 .apply-token-card {
   width: 100%;
   max-width: 450px;
@@ -172,7 +172,7 @@ const handleApplyToken = async () => {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* 标题区域 */
+/* Title area */
 .apply-token-header {
   text-align: center;
   margin-bottom: 35px;
@@ -193,7 +193,7 @@ const handleApplyToken = async () => {
   line-height: 1.4;
 }
 
-/* 表单容器 */
+/* Form container */
 .apply-token-form {
   width: 100%;
   display: flex;
@@ -201,14 +201,14 @@ const handleApplyToken = async () => {
   gap: 20px;
 }
 
-/* 表单项 */
+/* Form item */
 .form-item {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-/* 输入框样式（和登录页一致） */
+/* Input box style (same as login page) */
 .apply-token-input {
   height: 52px;
   padding: 0 20px;
@@ -220,7 +220,7 @@ const handleApplyToken = async () => {
   outline: none;
   background: rgba(255, 255, 255, 0.8);
 }
-/* 输入框聚焦动效 */
+/* Input box focus effect */
 .input-focus {
   border: double 1px transparent;
   background-image: linear-gradient(white, white),
@@ -229,13 +229,13 @@ const handleApplyToken = async () => {
   background-clip: padding-box, border-box;
   box-shadow: 0 0 12px rgba(102, 126, 234, 0.25);
 }
-/* 占位符样式 */
+/* Placeholder style */
 .apply-token-input::placeholder {
   color: #999;
   font-size: 15px;
 }
 
-/* 错误提示 */
+/* Error message */
 .error-msg {
   font-size: 12px;
   color: #e53e3e;
@@ -258,7 +258,7 @@ const handleApplyToken = async () => {
   align-items: center;
 }
 
-/* 申请按钮（和登录按钮样式一致） */
+/* Request button (same style as login button) */
 .apply-token-btn {
   width: 100%;
   height: 54px;
@@ -288,7 +288,7 @@ const handleApplyToken = async () => {
   box-shadow: none;
 }
 
-/* 加载动画 */
+/* Loading animation */
 .loading-spinner {
   width: 20px;
   height: 20px;
@@ -302,7 +302,7 @@ const handleApplyToken = async () => {
   100% { transform: rotate(360deg); }
 }
 
-/* 移动端适配 */
+/* Mobile adaptation */
 @media (max-width: 480px) {
   .apply-token-card {
     padding: 35px 25px;

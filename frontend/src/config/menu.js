@@ -13,6 +13,15 @@ export const menuConfig = {
       title: '仪表盘',
       roles: ['admin', 'volunteer', 'recycler', 'customer'],
       order: 0
+    },
+    {
+      path: '/dashboard/garbage',
+      name: 'GarbageQuery',
+      component: 'dashboard/Garbage/query',
+      icon: 'Search',
+      title: '垃圾分类查询',
+      roles: ['admin', 'volunteer', 'recycler', 'customer'],
+      order: 0
     }
   ],
   

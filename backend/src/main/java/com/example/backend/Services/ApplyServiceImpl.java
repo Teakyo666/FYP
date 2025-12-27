@@ -38,7 +38,7 @@ public class ApplyServiceImpl implements ApplyService {
         Result result = new Result();
         applyMapper.update(applyDO);
         result.setSuccess(Boolean.TRUE);
-        if(applyDO.getStatus().equals("同意")){
+        if(applyDO.getStatus().equals("accept")){
             LoginDO loginDO = loginMapper.selectById(applyDO.getUser_id());
             loginDO.setRole(applyDO.getTo_apply());
             loginMapper.update(loginDO);
@@ -59,28 +59,22 @@ public class ApplyServiceImpl implements ApplyService {
     
     @Override
     public Result listApplies(Integer page, Integer size, String to_apply, String status) {
-        // 设置默认分页参数
         if (page == null || page <= 0) page = 1;
         if (size == null || size <= 0) size = 10;
-        if (size > 50) size = 50; // 限制每页最大数量
+        if (size > 50) size = 50;
 
-        // 使用PageHelper进行分页
         PageHelper.startPage(page, size);
 
-        // 根据条件执行不同的查询
         List<ApplyDO> applies;
         if ((to_apply != null && !to_apply.trim().isEmpty()) || (status != null && !status.trim().isEmpty())) {
-            // 如果提供了to_apply或status参数，则执行条件查询
+
             applies = applyMapper.selectByCondition(to_apply, status);
         } else {
-            // 否则查询所有记录
             applies = applyMapper.selectAll();
         }
 
-        // 获取分页信息
         PageInfo<ApplyDO> pageInfo = new PageInfo<>(applies);
 
-        // 构造返回结果
         Map<String, Object> data = new HashMap<>();
         data.put("list", pageInfo.getList());
         data.put("total", pageInfo.getTotal());

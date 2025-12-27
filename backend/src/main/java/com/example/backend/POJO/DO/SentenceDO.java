@@ -1,6 +1,6 @@
 package com.example.backend.POJO.DO;
 
-import java.time.LocalDateTime; // 改为LocalDateTime适配timestamp
+import java.time.LocalDateTime; // Changed to LocalDateTime to adapt to timestamp
 
 public class SentenceDO {
     private Long id;
@@ -24,7 +24,7 @@ public class SentenceDO {
         this.sentence = sentence;
     }
 
-    public LocalDateTime getCreateDate() { // 驼峰命名：createDate
+    public LocalDateTime getCreateDate() {
         return createDate;
     }
 
@@ -32,7 +32,7 @@ public class SentenceDO {
         this.createDate = createDate;
     }
 
-    public String getCreateBy() { // 驼峰命名：createBy
+    public String getCreateBy() {
         return createBy;
     }
 

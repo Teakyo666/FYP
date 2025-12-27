@@ -19,6 +19,8 @@ public interface SentenceMapper {
     SentenceDO selectById(@Param("id") Long id);
 
     List<SentenceDO> selectByUsedDate(@Param("usedDate") Date usedDate);
+
+    SentenceDO selectRandomByJump();
     
     List<SentenceDO> selectAll();
     

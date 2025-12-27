@@ -67,28 +67,23 @@ public class RecycleServiceImpl implements RecycleService {
     
     @Override
     public Result listPlaces(Integer page, Integer size, String name) {
-        // 设置默认分页参数
+
         if (page == null || page <= 0) page = 1;
         if (size == null || size <= 0) size = 10;
-        if (size > 50) size = 50; // 限制每页最大数量
+        if (size > 50) size = 50;
         
-        // 使用PageHelper进行分页
+
         PageHelper.startPage(page, size);
-        
-        // 根据是否有name参数执行不同的查询
+
         List<RecycleDO> places;
         if (name != null && !name.trim().isEmpty()) {
-            // 如果提供了name参数，则执行条件查询
             places = recycleMapper.selectByCondition(name.trim());
         } else {
-            // 否则查询所有记录
             places = recycleMapper.selectAll();
         }
-        
-        // 获取分页信息
+
         PageInfo<RecycleDO> pageInfo = new PageInfo<>(places);
-        
-        // 构造返回结果
+
         Map<String, Object> data = new HashMap<>();
         data.put("list", pageInfo.getList());
         data.put("total", pageInfo.getTotal());

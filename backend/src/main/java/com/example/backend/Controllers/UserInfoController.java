@@ -31,12 +31,12 @@ public class UserInfoController {
         try {
             String imageUrl = userInfoService.saveImage(image);
             result.setSuccess(Boolean.TRUE);
-            result.setMessage("图片上传成功");
+            result.setMessage("Image upload successful");
             result.setData(imageUrl);
 
         } catch (Exception e) {
             result.setSuccess(false);
-            result.setMessage("图片上传失败: " + e.getMessage());
+            result.setMessage("Image upload failed: " + e.getMessage());
             result.setData(null);
         }
         return result;

@@ -37,7 +37,7 @@ public class AIGenerateServiceImpl implements AIGenerateService {
         Result result = new Result();
         AIMapper.update(aiGenerateDO);
         result.setSuccess(Boolean.TRUE);
-        if(aiGenerateDO.getStatus().equals("同意")){
+        if(aiGenerateDO.getStatus().equals("approved")){
             GarbageDO garbageDO = new GarbageDO();
             garbageDO.setId(aiGenerateDO.getId());
             garbageDO.setReason(aiGenerateDO.getReason());
@@ -63,25 +63,25 @@ public class AIGenerateServiceImpl implements AIGenerateService {
 
     @Override
     public Result listAIGarbage(Integer page, Integer size, String keyword, String type, String status) {
-        // 参数验证
+        // Parameter verification
         if (page == null || page <= 0) page = 1;
         if (size == null || size <= 0) size = 10;
         if (size > 50) size = 50;
 
-        // 使用PageHelper进行分页
+        // Use PageHelper for pagination
         PageHelper.startPage(page, size);
 
-        // 执行查询
+        // Execute the query
         List<AIGenerateDO> AIgarbages = AIMapper.selectWithConditions(
                 (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim() : null,
                 (type != null && !type.trim().isEmpty()) ? type.trim() : null,
                 (status != null && !status.trim().isEmpty()) ? status.trim() : null
         );
 
-        // 获取分页信息
+        // Obtain pagination information
         PageInfo<AIGenerateDO> pageInfo = new PageInfo<>(AIgarbages);
 
-        // 构造返回结果
+        // Construct the return result
         Map<String, Object> data = new HashMap<>();
         data.put("list", pageInfo.getList());
         data.put("total", pageInfo.getTotal());

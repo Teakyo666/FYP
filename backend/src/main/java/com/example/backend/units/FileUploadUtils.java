@@ -5,19 +5,19 @@ import java.security.MessageDigest;
 public class FileUploadUtils {
 
     /**
-     * 计算字节数组的 SHA-256 哈希值
+     * Calculate SHA-256 hash value of byte array
      */
     public static byte[] sha256(byte[] data) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             return md.digest(data);
         } catch (Exception e) {
-            throw new RuntimeException("计算 SHA-256 失败", e);
+            throw new RuntimeException("SHA-256 calculation failed", e);
         }
     }
 
     /**
-     * 将 byte[] 转换为十六进制字符串（小写）
+     * Convert byte[] to hexadecimal string (lowercase)
      */
     public static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();

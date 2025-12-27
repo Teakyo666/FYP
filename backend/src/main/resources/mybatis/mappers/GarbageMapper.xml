@@ -2,39 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- 对应 Mapper 接口全路径 -->
+<!-- Full path of the corresponding Mapper interface -->
 <mapper namespace="com.example.backend.Mappers.GarbageMapper">
 
-    <!-- 通用结果集映射（复用） -->
+    <!-- Common result mapping (reusable) -->
     <resultMap id="GarbageResultMap" type="com.example.backend.POJO.DO.GarbageDO">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="category" property="category"/>
         <result column="title" property="title"/>
-        <!-- 关键修复：指定 jdbcType 以正确处理 MySQL TEXT/BLOB 字段 -->
+        <!-- Key fix: specify jdbcType to properly handle MySQL TEXT/BLOB fields -->
         <result column="reason" property="reason" jdbcType="LONGVARCHAR"/>
     </resultMap>
 
-    <!-- 1. 新增垃圾信息 -->
+    <!-- 1. Insert garbage information -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.GarbageDO">
         INSERT INTO garbage (id, name, category, title, reason)
         VALUES (#{id}, #{name}, #{category}, #{title}, #{reason})
     </insert>
 
-    <!-- 2. 根据ID查询单条 -->
+    <!-- 2. Query single record by ID -->
     <select id="selectById" parameterType="String" resultMap="GarbageResultMap">
         SELECT id, name, category, title, reason
         FROM garbage
         WHERE id = #{id}
     </select>
-    <!-- 4. 查询所有垃圾信息 -->
+    <!-- 4. Query all garbage information -->
     <select id="selectAll" resultMap="GarbageResultMap">
         SELECT id, name, category, title, reason
         FROM garbage
         ORDER BY id DESC
     </select>
 
-    <!-- 5. 带条件查询（用于分页） -->
+    <!-- 5. Query with conditions (for pagination) -->
     <select id="selectWithConditions" resultMap="GarbageResultMap">
         SELECT id, name, category, title, reason
         FROM garbage
@@ -49,7 +49,7 @@
         ORDER BY id DESC
     </select>
 
-    <!-- 5. 全字段更新（非空判断，避免覆盖） -->
+    <!-- 5. Update all fields (non-null check to avoid overwriting) -->
     <update id="update" parameterType="com.example.backend.POJO.DO.GarbageDO">
         UPDATE garbage
         SET
@@ -68,7 +68,7 @@
         WHERE id = #{id}
     </update>
 
-    <!-- 6. 根据ID删除 -->
+    <!-- 6. Delete by ID -->
     <delete id="deleteById" parameterType="String">
         DELETE FROM garbage WHERE id = #{id}
     </delete>

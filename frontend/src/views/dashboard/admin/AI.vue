@@ -1,97 +1,97 @@
 <template>
   <div class="ai-management">
     <div class="header">
-      <h1>AI生成内容管理</h1>
-      <p>管理AI生成的垃圾分类内容</p>
+      <h1>AI-Generated Content Management</h1>
+      <p>Manage AI-generated garbage classification content</p>
     </div>
 
-    <!-- 搜索和操作栏 -->
+    <!-- Search and operation bar -->
     <div class="toolbar">
       <el-row :gutter="20">
         <el-col :span="18">
           <el-input
             v-model="searchForm.name"
-            placeholder="请输入垃圾名称"
+            placeholder="Please enter garbage name"
             clearable
             style="width: 300px"
             @keyup.enter="handleSearch"
           >
             <template #append>
-              <el-button :icon="Search" @click="handleSearch">搜索</el-button>
+              <el-button :icon="Search" @click="handleSearch">Search</el-button>
             </template>
           </el-input>
           <el-select
             v-model="searchForm.status"
-            placeholder="请选择状态"
+            placeholder="Please select status"
             clearable
             style="width: 150px; margin-left: 10px"
             @change="handleSearch"
           >
-            <el-option label="待审核" value="待审核" />
-            <el-option label="同意" value="同意" />
-            <el-option label="拒绝" value="拒绝" />
+            <el-option label="Pending" value="pending" />
+            <el-option label="Approved" value="approved" />
+            <el-option label="Rejected" value="rejected" />
           </el-select>
-          <el-button style="margin-left: 10px" @click="clearSearch">清除搜索</el-button>
+          <el-button style="margin-left: 10px" @click="clearSearch">Clear Search</el-button>
         </el-col>
         <el-col :span="6" class="text-right">
-          <el-button type="primary" :icon="Plus" @click="handleAdd">新增AI内容</el-button>
+          <el-button type="primary" :icon="Plus" @click="handleAdd">Add AI Content</el-button>
         </el-col>
       </el-row>
     </div>
 
-    <!-- 数据表格 -->
+    <!-- Data table -->
     <div class="table-container">
       <el-table
         :data="tableData"
         v-loading="loading"
-        element-loading-text="加载中..."
+        element-loading-text="Loading..."
         border
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="name" label="垃圾名称" min-width="150" />
-        <el-table-column prop="category" label="分类" width="120">
+        <el-table-column prop="name" label="Garbage Name" min-width="150" />
+        <el-table-column prop="category" label="Category" width="120">
           <template #default="scope">
             <el-tag :type="getTagType(scope.row.category)">
               {{ getCategoryText(scope.row.category) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="reason" label="分类原因" min-width="200" />
-        <el-table-column prop="title" label="处理建议" min-width="200" />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="reason" label="Classification Reason" min-width="200" />
+        <el-table-column prop="title" label="Handling Suggestion" min-width="200" />
+        <el-table-column prop="status" label="Status" width="100">
           <template #default="scope">
             <el-tag :type="getStatusTagType(scope.row.status)">
-              {{ scope.row.status || '未知状态' }}
+              {{ scope.row.status || 'Unknown Status' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="250" fixed="right">
+        <el-table-column label="Operations" width="250" fixed="right">
           <template #default="scope">
-            <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="small" @click="handleEdit(scope.row)">Edit</el-button>
             <el-button 
-              v-if="scope.row.status !== '同意'" 
+              v-if="scope.row.status !== 'approved'" 
               size="small" 
               type="success" 
               @click="handleApprove(scope.row)"
             >
-              同意
+              Approve
             </el-button>
             <el-button 
-              v-if="scope.row.status !== '拒绝'" 
+              v-if="scope.row.status !== 'rejected'" 
               size="small" 
               type="warning" 
               @click="handleReject(scope.row)"
             >
-              拒绝
+              Reject
             </el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button size="small" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
-    <!-- 分页 -->
+    <!-- Pagination -->
     <div class="pagination-container">
       <el-pagination
         v-model:current-page="pagination.currentPage"
@@ -104,7 +104,7 @@
       />
     </div>
 
-    <!-- 编辑/新增对话框 -->
+    <!-- Edit/Add dialog -->
     <el-dialog
       v-model="dialogVisible"
       :title="dialogTitle"
@@ -117,45 +117,45 @@
         :rules="formRules"
         label-width="100px"
       >
-        <el-form-item label="垃圾名称" prop="name">
-          <el-input v-model="formData.name" placeholder="请输入垃圾名称" />
+        <el-form-item label="Garbage Name" prop="name">
+          <el-input v-model="formData.name" placeholder="Please enter garbage name" />
         </el-form-item>
-        <el-form-item label="分类" prop="category">
-          <el-select v-model="formData.category" placeholder="请选择分类" style="width: 100%">
-            <el-option label="可回收物" value="可回收物" />
-            <el-option label="有害垃圾" value="有害垃圾" />
-            <el-option label="湿垃圾" value="湿垃圾" />
-            <el-option label="干垃圾" value="干垃圾" />
+        <el-form-item label="Category" prop="category">
+          <el-select v-model="formData.category" placeholder="Please select category" style="width: 100%">
+            <el-option label="Recyclable" value="recyclable" />
+            <el-option label="Hazardous Waste" value="hazardous" />
+            <el-option label="Wet Garbage" value="wet" />
+            <el-option label="Dry Garbage" value="dry" />
           </el-select>
         </el-form-item>
-        <el-form-item label="分类原因" prop="reason">
+        <el-form-item label="Classification Reason" prop="reason">
           <el-input
             v-model="formData.reason"
             type="textarea"
             :rows="3"
-            placeholder="请输入分类原因"
+            placeholder="Please enter classification reason"
           />
         </el-form-item>
-        <el-form-item label="处理建议" prop="title">
+        <el-form-item label="Handling Suggestion" prop="title">
           <el-input
             v-model="formData.title"
             type="textarea"
             :rows="3"
-            placeholder="请输入处理建议"
+            placeholder="Please enter handling suggestion"
           />
         </el-form-item>
-        <el-form-item label="状态" prop="status" v-if="isEdit">
-          <el-select v-model="formData.status" placeholder="请选择状态" style="width: 100%">
-            <el-option label="待审核" value="待审核" />
-            <el-option label="同意" value="同意" />
-            <el-option label="拒绝" value="拒绝" />
+        <el-form-item label="Status" prop="status" v-if="isEdit">
+          <el-select v-model="formData.status" placeholder="Please select status" style="width: 100%">
+            <el-option label="Pending Review" value="pending" />
+            <el-option label="Approved" value="approved" />
+            <el-option label="Rejected" value="rejected" />
           </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleSubmit">确定</el-button>
+          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="handleSubmit">Confirm</el-button>
         </span>
       </template>
     </el-dialog>
@@ -173,57 +173,57 @@ import {
 } from '@/api/AI'
 import request from "@/utils/request";
 
-// 响应式数据
+// Reactive data
 const loading = ref(false)
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
 const isEdit = ref(false)
 
-// 表格数据
+// Table data
 const tableData = ref([])
 
-// 搜索表单
+// Search form
 const searchForm = reactive({
   name: '',
   status: ''
 })
 
-// 分页
+// Pagination
 const pagination = reactive({
   currentPage: 1,
   pageSize: 10,
   total: 0
 })
 
-// 表单数据
+// Form data
 const formData = reactive({
   id: '',
   name: '',
   category: '',
   reason: '',
   title: '',
-  status: '待审核' // 默认状态
+  status: 'pending'
 })
 
-// 表单验证规则
+// Form validation rules
 const formRules = {
-  name: [{ required: true, message: '请输入垃圾名称', trigger: 'blur' }],
-  category: [{ required: true, message: '请选择分类', trigger: 'change' }],
-  reason: [{ required: true, message: '请输入分类原因', trigger: 'blur' }],
-  title: [{ required: true, message: '请输入处理建议', trigger: 'blur' }],
-  status: [{ required: true, message: '请选择状态', trigger: 'change' }]
+  name: [{ required: true, message: 'Please enter garbage name', trigger: 'blur' }],
+  category: [{ required: true, message: 'Please select category', trigger: 'change' }],
+  reason: [{ required: true, message: 'Please enter classification reason', trigger: 'blur' }],
+  title: [{ required: true, message: 'Please enter handling suggestion', trigger: 'blur' }],
+  status: [{ required: true, message: 'Please select status', trigger: 'change' }]
 }
 
-// 表单引用
+// Form reference
 const formRef = ref()
 
-// 搜索处理
+// Search handler
 const handleSearch = () => {
   pagination.currentPage = 1
   fetchData()
 }
 
-// 清除搜索处理
+// Clear search handler
 const clearSearch = () => {
   searchForm.name = ''
   searchForm.status = ''
@@ -231,23 +231,23 @@ const clearSearch = () => {
   fetchData()
 }
 
-// 获取数据
+// Fetch data
 const fetchData = async () => {
   try {
     loading.value = true
     
-    // 调用获取AI生成内容列表的API，支持分页和搜索
+    // Call API to get AI-generated content list, supports pagination and search
     const params = {
       page: pagination.currentPage,
       size: pagination.pageSize,
       keyword: searchForm.name || undefined,
-      status: searchForm.status || undefined // 修正：正确使用searchForm.status字段
+      status: searchForm.status || undefined // Fix: correctly use searchForm.status field
     }
     
     const response = await ListAIGarbage(params)
     
     if (response && response.success) {
-      // 确保数据结构正确
+      // Ensure data structure is correct
       if (response.data && typeof response.data === 'object') {
         tableData.value = Array.isArray(response.data.list) ? response.data.list : []
         pagination.total = typeof response.data.total === 'number' ? response.data.total : 0
@@ -258,41 +258,41 @@ const fetchData = async () => {
     } else {
       tableData.value = []
       pagination.total = 0
-      const errorMsg = response ? (response.message || '获取数据失败') : '服务器无响应'
+      const errorMsg = response ? (response.message || 'Failed to fetch data') : 'Server no response'
       ElMessage.error(errorMsg)
     }
   } catch (error) {
-    console.error('获取数据失败:', error)
-    ElMessage.error('获取数据失败: ' + (error.message || '未知错误'))
+    console.error('Failed to fetch data:', error)
+    ElMessage.error('Failed to fetch data: ' + (error.message || 'Unknown error'))
   } finally {
     loading.value = false
   }
 }
 
-// 处理新增
+// Handle add
 const handleAdd = () => {
-  dialogTitle.value = '新增AI内容'
+  dialogTitle.value = 'Add AI Content'
   isEdit.value = false
   resetForm()
   dialogVisible.value = true
 }
 
-// 处理编辑
+// Handle edit
 const handleEdit = (row) => {
-  dialogTitle.value = '编辑AI内容'
+  dialogTitle.value = 'Edit AI Content'
   isEdit.value = true
   Object.assign(formData, row)
   dialogVisible.value = true
 }
 
-// 处理同意
+// Handle approve
 const handleApprove = async (row) => {
   ElMessageBox.confirm(
-    `确定要同意"${row.name}"的分类吗？同意后将同步到正式的垃圾分类库中。`,
-    '同意确认',
+    `Are you sure you want to approve the classification of "${row.name}"? After approval, it will be synchronized to the official garbage classification database.`,
+    'Approve Confirmation',
     {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel',
       type: 'warning'
     }
   ).then(async () => {
@@ -303,32 +303,32 @@ const handleApprove = async (row) => {
         category: row.category,
         reason: row.reason,
         title: row.title,
-        status: '同意'
+        status: 'approved'
       }
       const response = await UpdateAIGarbage(updateData)
       if (response.success) {
-        ElMessage.success('已同意并同步到正式库')
+        ElMessage.success('Approved and synchronized to official database')
         fetchData()
       } else {
-        ElMessage.error(response.message || '操作失败')
+        ElMessage.error(response.message || 'Operation failed')
       }
     } catch (error) {
-      console.error('操作失败:', error)
-      ElMessage.error('操作失败')
+      console.error('Operation failed:', error)
+      ElMessage.error('Operation failed')
     }
   }).catch(() => {
-    // 用户取消操作
+    // User canceled operation
   })
 }
 
-// 处理拒绝
+// Handle reject
 const handleReject = async (row) => {
   ElMessageBox.confirm(
-    `确定要拒绝"${row.name}"的分类吗？`,
-    '拒绝确认',
+    `Are you sure you want to reject the classification of "${row.name}"?`,
+    'Reject Confirmation',
     {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel',
       type: 'warning'
     }
   ).then(async () => {
@@ -339,65 +339,65 @@ const handleReject = async (row) => {
         category: row.category,
         reason: row.reason,
         title: row.title,
-        status: '拒绝'
+        status: 'rejected'
       }
       const response = await UpdateAIGarbage(updateData)
       if (response.success) {
-        ElMessage.success('已拒绝')
+        ElMessage.success('Rejected')
         fetchData()
       } else {
-        ElMessage.error(response.message || '操作失败')
+        ElMessage.error(response.message || 'Operation failed')
       }
     } catch (error) {
-      console.error('操作失败:', error)
-      ElMessage.error('操作失败')
+      console.error('Operation failed:', error)
+      ElMessage.error('Operation failed')
     }
   }).catch(() => {
-    // 用户取消操作
+    // User canceled operation
   })
 }
 
-// 处理删除
+// Handle delete
 const handleDelete = (row) => {
   ElMessageBox.confirm(
-    `确定要删除AI内容 "${row.name}" 吗？`,
-    '删除确认',
+    `Are you sure you want to delete AI content "${row.name}"?`,
+    'Delete Confirmation',
     {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel',
       type: 'warning'
     }
   ).then(async () => {
     try {
-      // 使用DELETE请求删除AI内容
+      // Use DELETE request to delete AI content
       const response = await request({
         url: "AI/delete",
         method: "post",
         params: { id: row.id }
       })
       if (response.success) {
-        ElMessage.success('删除成功')
+        ElMessage.success('Deleted successfully')
         fetchData()
       } else {
-        ElMessage.error(response.message || '删除失败')
+        ElMessage.error(response.message || 'Deletion failed')
       }
     } catch (error) {
-      console.error('删除失败:', error)
-      ElMessage.error('删除失败')
+      console.error('Deletion failed:', error)
+      ElMessage.error('Deletion failed')
     }
   }).catch(() => {
-    // 用户取消删除
+    // User canceled deletion
   })
 }
 
-// 提交表单
+// Submit form
 const handleSubmit = () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       try {
         let response
         if (isEdit.value) {
-          // 编辑 - 发送所有字段
+          // Edit - send all fields
           const updateData = {
             id: formData.id,
             name: formData.name,
@@ -408,44 +408,44 @@ const handleSubmit = () => {
           }
           response = await UpdateAIGarbage(updateData)
         } else {
-          // 新增 - 设置默认状态为待审核
+          // Add - set default status to pending review
           const createData = {
             name: formData.name,
             category: formData.category,
             reason: formData.reason,
             title: formData.title,
-            status: '待审核'
+            status: 'pending'
           }
           response = await CreateAIGarbage(createData)
         }
         
         if (response.success) {
-          ElMessage.success(isEdit.value ? '更新成功' : '新增成功')
+          ElMessage.success(isEdit.value ? 'Updated successfully' : 'Added successfully')
           dialogVisible.value = false
           fetchData()
         } else {
-          ElMessage.error(response.message || (isEdit.value ? '更新失败' : '新增失败'))
+          ElMessage.error(response.message || (isEdit.value ? 'Update failed' : 'Add failed'))
         }
       } catch (error) {
-        console.error('操作失败:', error)
+        console.error('Operation failed:', error)
         console.error('Error details:', {
           message: error.message,
           code: error.code,
           response: error.response
         })
-        ElMessage.error(isEdit.value ? '更新失败' : '新增失败')
+        ElMessage.error(isEdit.value ? 'Update failed' : 'Add failed')
       }
     }
   })
 }
 
-// 关闭对话框前的处理
+// Handle dialog close
 const handleDialogClose = (done) => {
   resetForm()
   done()
 }
 
-// 重置表单
+// Reset form
 const resetForm = () => {
   Object.assign(formData, {
     id: '',
@@ -453,14 +453,14 @@ const resetForm = () => {
     category: '',
     reason: '',
     title: '',
-    status: '待审核'
+    status: 'pending'
   })
   if (formRef.value) {
     formRef.value.resetFields()
   }
 }
 
-// 分页相关方法
+// Pagination related methods
 const handleSizeChange = (val) => {
   pagination.pageSize = val
   fetchData()
@@ -471,33 +471,33 @@ const handleCurrentChange = (val) => {
   fetchData()
 }
 
-// 根据分类获取标签类型
+// Get tag type based on category
 const getTagType = (category) => {
   const typeMap = {
-    '可回收物': 'success',
-    '有害垃圾': 'danger',
-    '湿垃圾': 'warning',
-    '干垃圾': 'info'
+    'Recyclable Waste': 'recoverable',
+    'Hazardous waste': 'danger',
+    'Kitchen waste': 'warning',
+    'Non-recyclable waste': 'info'
   }
   return typeMap[category] || 'info'
 }
 
-// 根据状态获取标签类型
+// Get tag type based on status
 const getStatusTagType = (status) => {
   const typeMap = {
-    '待审核': 'warning',
-    '同意': 'success',
-    '拒绝': 'danger'
+    'pending': 'warning',
+    'approved': 'success',
+    'rejected': 'danger'
   }
   return typeMap[status] || 'info'
 }
 
-// 根据分类获取显示文本
+// Get display text based on category
 const getCategoryText = (category) => {
-  return category || '未知分类'
+  return category || 'Unknown category'
 }
 
-// 组件挂载时获取数据
+// Fetch data when component is mounted
 onMounted(() => {
   fetchData()
 })

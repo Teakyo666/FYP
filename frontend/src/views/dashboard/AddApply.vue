@@ -4,7 +4,7 @@
     <el-card class="apply-card">
       <template #header>
         <div class="card-header">
-          <span>添加申请</span>
+          <span>Apply Form</span>
         </div>
       </template>
       
@@ -15,43 +15,43 @@
         label-width="120px"
         class="apply-form"
       >
-        <!-- 申请权限 -->
-        <el-form-item label="申请权限" prop="to_apply">
+        <!-- Apply for permission -->
+        <el-form-item label="Apply for Permission" prop="to_apply">
           <el-select 
             v-model="formData.to_apply" 
-            placeholder="请选择申请权限"
+            placeholder="Please select permission to apply for"
             style="width: 100%"
           >
-            <el-option label="回收员" value="recycler"></el-option>
-            <el-option label="志愿者" value="volunteer"></el-option>
+            <el-option label="Recycler" value="recycler"></el-option>
+            <el-option label="Volunteer" value="volunteer"></el-option>
           </el-select>
         </el-form-item>
         
-        <!-- 申请原因 -->
-        <el-form-item label="申请原因" prop="reason">
+        <!-- Application reason -->
+        <el-form-item label="Application Reason" prop="reason">
           <el-input
             v-model="formData.reason"
             type="textarea"
             :rows="6"
-            placeholder="请输入申请原因"
+            placeholder="Please enter application reason"
             clearable
           />
         </el-form-item>
         
-        <!-- 隐藏字段：用户ID -->
-        <el-form-item label="用户ID" prop="user_id" v-show="false">
+        <!-- Hidden field: User ID -->
+        <el-form-item label="User ID" prop="user_id" v-show="false">
           <el-input v-model="formData.user_id" disabled></el-input>
         </el-form-item>
         
-        <!-- 隐藏字段：状态 -->
-        <el-form-item label="状态" prop="status" v-show="false">
+        <!-- Hidden field: Status -->
+        <el-form-item label="Status" prop="status" v-show="false">
           <el-input v-model="formData.status" disabled></el-input>
         </el-form-item>
         
-        <!-- 操作按钮 -->
+        <!-- Action buttons -->
         <el-form-item>
-          <el-button type="primary" @click="submitForm" :loading="submitting">提交申请</el-button>
-          <el-button @click="resetForm">重置</el-button>
+          <el-button type="primary" @click="submitForm" :loading="submitting">Submit Application</el-button>
+          <el-button @click="resetForm">Reset</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -64,42 +64,42 @@ import { ElMessage } from 'element-plus'
 import { CreateApply } from '@/api/Apply'
 import { useUserStore } from '@/store'
 
-// 表单引用
+// Form reference
 const formRef = ref()
 const submitting = ref(false)
 
-// 表单数据
+// Form data
 const formData = reactive({
-  to_apply: '',  // 修改字段名为 to_apply
+  to_apply: '',  // Changed field name to to_apply
   reason: '',
-  user_id: '',   // 确保 user_id 被正确传递
-  status: '待审核'
+  user_id: '',   // Ensure user_id is correctly passed
+  status: 'Pending Review'
 })
 
-// 表单验证规则
+// Form validation rules
 const formRules = reactive({
-  to_apply: [  // 更新验证规则的字段名
-    { required: true, message: '请选择申请权限', trigger: 'change' }
+  to_apply: [  // Updated field name for validation rules
+    { required: true, message: 'Please select permission to apply for', trigger: 'change' }
   ],
   reason: [
-    { required: true, message: '请输入申请原因', trigger: 'blur' }
+    { required: true, message: 'Please enter application reason', trigger: 'blur' }
   ],
   user_id: [
-    { required: true, message: '用户ID不能为空', trigger: 'blur' }
+    { required: true, message: 'User ID cannot be empty', trigger: 'blur' }
   ]
 })
 
-// 获取当前用户信息
+// Get current user information
 const userStore = useUserStore()
 
-// 页面加载时自动填充用户ID
+// Automatically populate user ID when page loads
 onMounted(() => {
   if (userStore && userStore.id) {
     formData.user_id = userStore.id
   }
 })
 
-// 提交表单
+// Submit form
 const submitForm = async () => {
   if (!formRef.value) return
   
@@ -108,18 +108,18 @@ const submitForm = async () => {
       try {
         submitting.value = true
         
-        // 确保用户ID被正确设置
+        // Ensure user ID is correctly set
         if (!formData.user_id && userStore && userStore.id) {
           formData.user_id = userStore.id
         }
         
-        // 检查所有必需字段是否存在
+        // Check if all required fields exist
         if (!formData.to_apply || !formData.reason || !formData.user_id) {
-          ElMessage.error('请确保所有字段都已填写')
+          ElMessage.error('Please ensure all fields are filled')
           return
         }
         
-        // 准备提交的数据
+        // Prepare data for submission
         const submitData = {
           to_apply: formData.to_apply,
           reason: formData.reason,
@@ -129,14 +129,14 @@ const submitForm = async () => {
         
         const res = await CreateApply(submitData)
         if (res.code === 200 || res.success) {
-          ElMessage.success('申请提交成功！')
+          ElMessage.success('Application submitted successfully!')
           resetForm()
         } else {
-          ElMessage.error(res.msg || '申请提交失败')
+          ElMessage.error(res.msg || 'Application submission failed')
         }
       } catch (err) {
-        ElMessage.error('申请提交失败：' + (err.message || '未知错误'))
-        console.error('提交错误:', err)
+        ElMessage.error('Application submission failed: ' + (err.message || 'Unknown error'))
+        console.error('Submission error:', err)
       } finally {
         submitting.value = false
       }
@@ -144,14 +144,14 @@ const submitForm = async () => {
   })
 }
 
-// 重置表单
+// Reset form
 const resetForm = () => {
   formRef.value.resetFields()
   if (userStore && userStore.id) {
     formData.user_id = userStore.id
   }
-  formData.status = '待审核'
-  formData.to_apply = ''  // 重置时也清空 to_apply 字段
+  formData.status = 'Pending Review'
+  formData.to_apply = ''  // Also clear the to_apply field when resetting
   formData.reason = ''
 }
 </script>

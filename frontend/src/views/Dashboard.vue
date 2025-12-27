@@ -1,12 +1,12 @@
 <!-- src/views/Dashboard.vue -->
 <template>
   <el-container class="full-layout">
-    <!-- 左侧卡片式菜单 -->
+    <!-- Left card-style menu -->
     <el-aside width="240px" class="sidebar">
       <SidebarMenu />
     </el-aside>
 
-    <!-- 右侧主体 -->
+    <!-- Right main content -->
     <el-container>
       <el-header height="70px" class="top-header">
         <div class="header-left">
@@ -27,7 +27,7 @@
                 class="user-avatar"
               />
               <div class="user-details">
-                <span class="username">{{ userStore.name || userStore.role || '游客' }}</span>
+                <span class="username">{{ userStore.name || userStore.role || 'Guest' }}</span>
                 <span class="user-role">{{ getRoleText() }}</span>
               </div>
             </div>
@@ -35,15 +35,15 @@
               <el-dropdown-menu class="custom-dropdown">
                 <el-dropdown-item @click="router.push('/dashboard/add-apply')">
                   <el-icon><Plus /></el-icon>
-                  添加申请
+                  Apply for permissions 
                 </el-dropdown-item>
                 <el-dropdown-item @click="router.push('/dashboard/profile')">
                   <el-icon><User /></el-icon>
-                  个人资料
+                  Profile
                 </el-dropdown-item>
                 <el-dropdown-item @click="handleLogout" divided>
                   <el-icon><SwitchButton /></el-icon>
-                  退出登录
+                  Logout
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -81,46 +81,46 @@ const router = useRouter()
 const userStore = useUserStore()
 const defaultAvatar = 'https://cube.elemecdn.com/0/88/83b7c0bd1.png'
 
-// 登录检查
+// Login check
 onMounted(() => {
   if (!userStore.token && !userStore.role) {
     router.replace('/login')
   }
 })
 
-// 获取当前页面名称
+// Get current page name
 const getCurrentPageName = () => {
   const pathMap = {
-    '/dashboard': '仪表盘',
-    '/dashboard/admin': '管理中心',
-    '/dashboard/volunteer': '志愿者中心',
-    '/dashboard/recycler': '回收员中心',
-    '/dashboard/customer': '个人中心',
-    '/dashboard/profile': '个人资料',
+    '/dashboard': 'Dashboard',
+    '/dashboard/admin': 'Admin Center',
+    '/dashboard/volunteer': 'Volunteer Center',
+    '/dashboard/recycler': 'Recycler Center',
+    '/dashboard/customer': 'Personal Center',
+    '/dashboard/profile': 'Profile',
   }
-  return pathMap[route.path] || '仪表盘'
+  return pathMap[route.path] || 'Dashboard'
 }
 
-// 获取角色文本
+// Get role text
 const getRoleText = () => {
   const roleMap = {
-    'admin': '系统管理员',
-    'volunteer': '志愿者',
-    'recycler': '回收员',
-    'customer': '普通用户',
+    'admin': 'System Administrator',
+    'volunteer': 'Volunteer',
+    'recycler': 'Recycler',
+    'customer': 'Regular User',
   }
-  return roleMap[userStore.role] || '游客'
+  return roleMap[userStore.role] || 'Guest'
 }
 
 const handleLogout = () => {
-  ElMessageBox.confirm('确定退出登录吗？', '退出提示', { 
+  ElMessageBox.confirm('Are you sure you want to logout?', 'Logout Confirmation', { 
     type: 'warning',
-    confirmButtonText: '确定退出',
-    cancelButtonText: '取消',
+    confirmButtonText: 'Confirm Logout',
+    cancelButtonText: 'Cancel',
   })
     .then(() => {
       userStore.logout?.()
-      ElMessage.success('已退出登录')
+      ElMessage.success('Logged out successfully')
       router.replace('/login')
     })
 }

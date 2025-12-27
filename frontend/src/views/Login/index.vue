@@ -1,54 +1,54 @@
 <template>
   <div class="login-page">
-    <!-- 背景装饰 -->
+    <!-- Background decoration -->
     <div class="bg-decoration">
       <div class="circle circle-1"></div>
       <div class="circle circle-2"></div>
       <div class="circle circle-3"></div>
     </div>
 
-    <!-- 左侧品牌区域 -->
+    <!-- Left brand section -->
     <div class="brand-section">
       <div class="brand-content">
         <div class="brand-icon">
           <div class="recycle-icon">♻️</div>
         </div>
-        <h1 class="brand-title">环保回收系统</h1>
-        <p class="brand-slogan">垃圾分类 · 循环新生 · 美好地球</p>
+        <h1 class="brand-title">Eco Recycling System</h1>
+        <p class="brand-slogan">Waste Sorting · Recycling · Better Earth</p>
         
         <div class="features">
           <div class="feature-item">
             <div class="feature-icon">✓</div>
-            <div class="feature-text">智能分类识别</div>
+            <div class="feature-text">Smart Classification</div>
           </div>
           <div class="feature-item">
             <div class="feature-icon">✓</div>
-            <div class="feature-text">在线查询回收</div>
+            <div class="feature-text">Online Recycling Query</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 右侧登录卡片 -->
+    <!-- Right login card -->
     <div class="login-section">
       <div class="login-card">
         <div class="login-header">
-          <h2 class="login-title">欢迎回来</h2>
-          <p class="login-subtitle">登录您的账户，开启环保之旅</p>
+          <h2 class="login-title">Welcome Back</h2>
+          <p class="login-subtitle">Sign in to your account to start your eco journey</p>
         </div>
 
         <form class="login-form" @submit.prevent="handleLogin">
-          <!-- 用户名 -->
+          <!-- Username -->
           <div class="form-item">
             <label class="form-label">
               <span class="label-icon">👤</span>
-              用户名
+              Username
             </label>
             <div class="input-wrapper">
               <input
                 type="text"
                 v-model="loginForm.username"
-                placeholder="请输入用户名/手机号"
+                placeholder="Enter email"
                 class="login-input"
                 :class="{ 'input-focus': usernameFocus, 'input-error': usernameError }"
                 @focus="usernameFocus = true"
@@ -70,17 +70,17 @@
             </transition>
           </div>
 
-          <!-- 密码 -->
+          <!-- Password -->
           <div class="form-item">
             <label class="form-label">
               <span class="label-icon">🔒</span>
-              密码
+              Password
             </label>
             <div class="input-wrapper">
               <input
                 :type="showPassword ? 'text' : 'password'"
                 v-model="loginForm.password"
-                placeholder="请输入密码"
+                placeholder="Enter password"
                 class="login-input"
                 :class="{ 'input-focus': passwordFocus, 'input-error': passwordError }"
                 @focus="passwordFocus = true"
@@ -93,7 +93,7 @@
                   <circle cx="12" cy="12" r="3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 15.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   <line x1="1" y1="1" x2="23" y2="23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </span>
@@ -106,18 +106,18 @@
             </transition>
           </div>
 
-          <!-- 验证码 -->
+          <!-- Verification Code -->
           <div class="form-item">
             <label class="form-label">
               <span class="label-icon">🔐</span>
-              验证码
+              Verification Code
             </label>
             <div class="code-wrapper">
               <div class="input-wrapper code-input-wrapper">
                 <input
                   type="text"
                   v-model="loginForm.code"
-                  placeholder="输入验证码"
+                  placeholder="Enter verification code"
                   class="login-input code-input"
                   :class="{ 'input-focus': codeFocus, 'input-error': codeError }"
                   @focus="codeFocus = true"
@@ -128,7 +128,7 @@
               </div>
               <div class="code-img" @click="refreshCode">
                 <span class="code-text">{{ verifyCode }}</span>
-                <span class="refresh-hint">点击刷新</span>
+                <span class="refresh-hint">Click to refresh</span>
               </div>
             </div>
             <transition name="error-fade">
@@ -142,19 +142,19 @@
           <div class="login-options">
             <label class="remember-checkbox">
               <input type="checkbox" v-model="rememberMe" />
-              <span class="checkbox-text">记住我</span>
+              <span class="checkbox-text">Remember Me</span>
             </label>
-            <span class="forget-password" @click="toForgetPassword">忘记密码？</span>
+            <span class="forget-password" @click="toForgetPassword">Forgot Password?</span>
           </div>
 
           <button type="submit" class="login-btn" :disabled="isLoading">
             <span v-if="isLoading" class="loading-spinner"></span>
-            <span v-else>登 录</span>
+            <span v-else>Login</span>
           </button>
 
           <div class="register-section">
-            <span class="register-text">还没有账号？</span>
-            <span @click="toRegister" class="register-link">立即注册</span>
+            <span class="register-text">Don't have an account?</span>
+            <span @click="toRegister" class="register-link">Register Now</span>
           </div>
         </form>
       </div>
@@ -194,23 +194,23 @@ const validateForm = () => {
   let ok = true
 
   if (!loginForm.value.username.trim()) {
-    usernameError.value = "请输入用户名"
+    usernameError.value = "Please enter username"
     ok = false
   } else if (loginForm.value.username.length < 3) {
-    usernameError.value = "用户名至少3位"
+    usernameError.value = "Username must be at least 3 characters"
     ok = false
   } else usernameError.value = ""
 
   if (!loginForm.value.password) {
-    passwordError.value = "请输入密码"
+    passwordError.value = "Please enter password"
     ok = false
   } else if (loginForm.value.password.length < 6) {
-    passwordError.value = "密码至少6位"
+    passwordError.value = "Password must be at least 6 characters"
     ok = false
   } else passwordError.value = ""
 
   if (!loginForm.value.code || loginForm.value.code !== verifyCode.value) {
-    codeError.value = "验证码错误"
+    codeError.value = "Verification code error"
     refreshCode()
     loginForm.value.code = ""
     ok = false
@@ -240,17 +240,17 @@ const handleLogin = async () => {
         avatar: data.avatar
       })
 
-      ElMessage.success("登录成功！欢迎回来 🎉")
+      ElMessage.success("Login successful! Welcome back 🎉")
       await router.push("/dashboard")
 
     } else {
-      ElMessage.error(res.message || "登录失败，请检查账号信息")
+      ElMessage.error(res.message || "Login failed, please check your account information")
       refreshCode()
       loginForm.value.code = ""
     }
   } catch (err) {
     console.error(err)
-    ElMessage.error("网络错误，请稍后重试")
+    ElMessage.error("Network error, please try again later")
     refreshCode()
     loginForm.value.code = ""
   } finally {
@@ -275,7 +275,7 @@ onMounted(refreshCode)
   overflow: hidden;
 }
 
-/* 背景装饰 */
+/* Background decoration */
 .bg-decoration {
   position: absolute;
   inset: 0;
@@ -319,7 +319,7 @@ onMounted(refreshCode)
   50% { transform: translate(30px, 30px) scale(1.05); }
 }
 
-/* 左侧品牌区域 */
+/* Left brand area */
 .brand-section {
   flex: 1;
   display: flex;
@@ -405,7 +405,7 @@ onMounted(refreshCode)
   font-weight: 600;
 }
 
-/* 右侧登录区域 */
+/* Right login area */
 .login-section {
   width: 520px;
   display: flex;
@@ -729,7 +729,7 @@ onMounted(refreshCode)
   text-decoration: underline;
 }
 
-/* 响应式 */
+/* Responsive */
 @media (max-width: 1200px) {
   .brand-section {
     display: none;

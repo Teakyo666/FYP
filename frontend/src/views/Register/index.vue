@@ -2,18 +2,18 @@
   <div class="register-page">
     <div class="register-card">
       <div class="register-header">
-        <h2 class="register-title">账号注册</h2>
-        <p class="register-subtitle">填写以下信息，快速创建账号</p>
+        <h2 class="register-title">Account Registration</h2>
+        <p class="register-subtitle">Fill in the following information to quickly create an account</p>
       </div>
 
-      <!-- 注册表单 -->
+      <!-- Registration form -->
       <form class="register-form" @submit.prevent="handleRegister">
-        <!-- 邮箱输入框 -->
+        <!-- Email input -->
         <div class="form-item">
           <input
             type="email"
             v-model="registerForm.email"
-            placeholder="请输入邮箱"
+            placeholder="Enter email"
             class="register-input"
             :class="{ 'input-focus': emailFocus }"
             @focus="emailFocus = true"
@@ -23,12 +23,12 @@
           <p class="error-msg" v-if="emailError">{{ emailError }}</p>
         </div>
 
-        <!-- 密码输入框 -->
+        <!-- Password input -->
         <div class="form-item">
           <input
             type="password"
             v-model="registerForm.password"
-            placeholder="请输入密码（不少于6位）"
+            placeholder="Enter password (at least 6 characters)"
             class="register-input"
             :class="{ 'input-focus': passwordFocus }"
             @focus="passwordFocus = true"
@@ -38,12 +38,12 @@
           <p class="error-msg" v-if="passwordError">{{ passwordError }}</p>
         </div>
 
-        <!-- 二次密码输入框 -->
+        <!-- Confirm password input -->
         <div class="form-item">
           <input
             type="password"
             v-model="registerForm.confirmPassword"
-            placeholder="请再次输入密码"
+            placeholder="Re-enter password"
             class="register-input"
             :class="{ 'input-focus': confirmPasswordFocus }"
             @focus="confirmPasswordFocus = true"
@@ -53,14 +53,14 @@
           <p class="error-msg" v-if="confirmPasswordError">{{ confirmPasswordError }}</p>
         </div>
 
-        <!-- 注册按钮 + 跳转登录 -->
+        <!-- Register button + login redirect -->
         <div class="register-actions">
           <button type="submit" class="register-btn" :disabled="isLoading">
             <span v-if="isLoading" class="loading-spinner"></span>
-            立即注册
+            Register Now
           </button>
           <div class="login-link">
-            已有账号？<span @click="toLogin" class="link-text">立即登录</span>
+            Already have an account? <span @click="toLogin" class="link-text">Login Now</span>
           </div>
         </div>
       </form>
@@ -71,65 +71,65 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-// 导入注册接口（后续创建）
+// Import registration API (to be created later)
 import { register } from "@/api/login";
 
 const router = useRouter();
 
-// 表单数据：邮箱、密码、二次密码
+// Form data: email, password, confirm password
 const registerForm = ref({
   email: "",
   password: "",
   confirmPassword: "",
 });
 
-// 输入框聚焦状态（动效控制）
+// Input focus status (animation control)
 const emailFocus = ref(false);
 const passwordFocus = ref(false);
 const confirmPasswordFocus = ref(false);
 
-// 表单错误提示
+// Form error messages
 const emailError = ref("");
 const passwordError = ref("");
 const confirmPasswordError = ref("");
 
-// 注册按钮加载状态
+// Register button loading status
 const isLoading = ref(false);
 
-// 表单校验逻辑
+// Form validation logic
 const validateForm = () => {
   let isValid = true;
   const { email, password, confirmPassword } = registerForm.value;
 
-  // 校验邮箱
+  // Validate email
   const emailReg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!email.trim()) {
-    emailError.value = "请输入邮箱";
+    emailError.value = "Please enter email";
     isValid = false;
   } else if (!emailReg.test(email)) {
-    emailError.value = "请输入有效的邮箱格式（例：xxx@xxx.com）";
+    emailError.value = "Please enter a valid email format (e.g., xxx@xxx.com)";
     isValid = false;
   } else {
     emailError.value = "";
   }
 
-  // 校验密码
+  // Validate password
   if (!password.trim()) {
-    passwordError.value = "请输入密码";
+    passwordError.value = "Please enter password";
     isValid = false;
   } else if (password.length < 6) {
-    passwordError.value = "密码长度不少于6位";
+    passwordError.value = "Password length must be at least 6 characters";
     isValid = false;
   } else {
     passwordError.value = "";
   }
 
-  // 校验二次密码
+  // Validate confirm password
   if (!confirmPassword.trim()) {
-    confirmPasswordError.value = "请再次输入密码";
+    confirmPasswordError.value = "Please re-enter password";
     isValid = false;
   } else if (confirmPassword !== password) {
-    confirmPasswordError.value = "两次输入的密码不一致";
+    confirmPasswordError.value = "The two passwords entered do not match";
     isValid = false;
   } else {
     confirmPasswordError.value = "";
@@ -138,47 +138,47 @@ const validateForm = () => {
   return isValid;
 };
 
-// 核心注册逻辑
+// Core registration logic
 const handleRegister = async () => {
   try {
-    // 1. 前端表单校验
+    // 1. Frontend form validation
     if (!validateForm()) return;
 
-    // 2. 显示加载状态
+    // 2. Show loading status
     isLoading.value = true;
 
-    // 3. 调用注册接口（仅传邮箱和密码，二次密码仅前端校验）
+    // 3. Call registration API (only pass email and password, confirm password is only for frontend validation)
     const res = await register({
       username: registerForm.value.email,
       password: registerForm.value.password,
     });
 
-    // 4. 接口成功处理
+    // 4. API success handling
     if (res.success) {
-      alert("注册成功！即将跳转到登录页～");
-      router.push("/login"); // 注册成功跳登录页
+      alert("Registration successful! Redirecting to login page～");
+      router.push("/login"); // Redirect to login page after successful registration
     } else {
-      // 接口返回失败（如邮箱已被注册）
-      alert(res.message || "注册失败，请稍后重试！");
+      // API returns failure (e.g., email already registered)
+      alert(res.message || "Registration failed, please try again later!");
     }
   } catch (error) {
-    // 网络异常/接口调用失败
-    console.error("注册接口调用失败：", error);
-    alert("网络异常，请检查后端是否启动！");
+    // Network exception/API call failure
+    console.error("Registration API call failed:", error);
+    alert("Network error, please check if the backend is running!");
   } finally {
-    // 关闭加载状态
+    // Close loading status
     isLoading.value = false;
   }
 };
 
-// 跳转到登录页
+// Navigate to login page
 const toLogin = () => {
   router.push("/login");
 };
 </script>
 
 <style scoped>
-/* 注册页全屏容器（和登录页一致的渐变背景） */
+/* Registration page full-screen container (same gradient background as login page) */
 .register-page {
   position: fixed !important;
   top: 0 !important;
@@ -195,7 +195,7 @@ const toLogin = () => {
   overflow: hidden;
 }
 
-/* 背景装饰点（和登录页一致） */
+/* Background decoration dots (same as login page) */
 .register-page::before {
   content: "";
   position: absolute;
@@ -219,7 +219,7 @@ const toLogin = () => {
   filter: blur(60px);
 }
 
-/* 注册卡片（和登录页一致的悬浮质感） */
+/* Registration card (same floating texture as login page) */
 .register-card {
   width: 100%;
   max-width: 450px;
@@ -232,7 +232,7 @@ const toLogin = () => {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* 注册标题区域 */
+/* Registration title area */
 .register-header {
   text-align: center;
   margin-bottom: 35px;
@@ -253,7 +253,7 @@ const toLogin = () => {
   line-height: 1.4;
 }
 
-/* 表单容器 */
+/* Form container */
 .register-form {
   width: 100%;
   display: flex;
@@ -261,14 +261,14 @@ const toLogin = () => {
   gap: 20px;
 }
 
-/* 单个表单项 */
+/* Single form item */
 .form-item {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-/* 输入框样式（和登录页一致） */
+/* Input box style (same as login page) */
 .register-input {
   height: 52px;
   padding: 0 20px;
@@ -280,7 +280,7 @@ const toLogin = () => {
   outline: none;
   background: rgba(255, 255, 255, 0.8);
 }
-/* 输入框聚焦动效（和登录页一致） */
+/* Input box focus effect (same as login page) */
 .input-focus {
   border: double 1px transparent;
   background-image: linear-gradient(white, white),
@@ -289,13 +289,13 @@ const toLogin = () => {
   background-clip: padding-box, border-box;
   box-shadow: 0 0 12px rgba(102, 126, 234, 0.25);
 }
-/* 输入框占位符 */
+/* Input box placeholder */
 .register-input::placeholder {
   color: #999;
   font-size: 15px;
 }
 
-/* 错误提示文字（和登录页一致） */
+/* Error message text (same as login page) */
 .error-msg {
   font-size: 12px;
   color: #e53e3e;
@@ -318,7 +318,7 @@ const toLogin = () => {
   align-items: center;
 }
 
-/* 注册按钮 + 跳转登录区域 */
+/* Register button + login redirect area */
 .register-actions {
   display: flex;
   flex-direction: column;
@@ -326,7 +326,7 @@ const toLogin = () => {
   margin-top: 10px;
 }
 
-/* 注册按钮（和登录页按钮样式一致） */
+/* Register button (same style as login page button) */
 .register-btn {
   width: 100%;
   height: 54px;
@@ -360,7 +360,7 @@ const toLogin = () => {
   box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
 }
 
-/* 加载动画（和登录页一致） */
+/* Loading animation (same as login page) */
 .loading-spinner {
   width: 20px;
   height: 20px;
@@ -374,7 +374,7 @@ const toLogin = () => {
   100% { transform: rotate(360deg); }
 }
 
-/* 跳转登录链接 */
+/* Login redirect link */
 .login-link {
   text-align: center;
   font-size: 14px;

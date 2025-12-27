@@ -33,7 +33,7 @@ export function GetUserBehavior(data) {
   });
 }
 
-// 上传头像API
+// Upload avatar API
 export function UploadAvatar(data) {
   return request({
     url: "userInfo/avatar",

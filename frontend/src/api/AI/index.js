@@ -1,7 +1,7 @@
 import axios from 'axios'
 import request from "@/utils/request";
 
-// 创建大模型API实例
+// Create large model API instance
 const bigModelApiClient = axios.create({
   baseURL: 'https://open.bigmodel.cn/api/llm-application/open/v3',
   timeout: 30000,
@@ -12,9 +12,9 @@ const bigModelApiClient = axios.create({
 })
 
 /**
- * 运行垃圾分类检查 (新的大模型API)
- * @param {string} question - 用户输入的垃圾类型问题
- * @returns {Promise} API 响应流
+ * Run garbage classification check (new large model API)
+ * @param {string} question - User input for garbage type question
+ * @returns {Promise} API response stream
  */
 export const runGarbageClassification = async (question) => {
   try {

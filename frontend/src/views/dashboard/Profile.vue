@@ -12,7 +12,7 @@
                 <el-icon><User /></el-icon>
               </div>
               <div class="header-text">
-                <span class="title">个人中心</span>
+                <span class="title">Profile</span>
                 <span class="subtitle">Personal Center</span>
               </div>
             </div>
@@ -24,7 +24,7 @@
         </div>
 
         <div v-else class="content-wide">
-          <!-- 头像区域 -->
+          <!-- Avatar section -->
           <div class="top-section">
             <div class="avatar-box">
               <el-avatar 
@@ -37,28 +37,28 @@
               <div class="glow-ring"></div>
               <div v-if="isEditMode" class="upload-overlay" @click="handleAvatarClick">
                 <el-icon><Camera /></el-icon>
-                <span>更换头像</span>
+                <span>Change Avatar</span>
               </div>
             </div>
 
             <div class="user-info">
               <div v-if="!isEditMode">
-                <h1 class="username">{{ form.name || '环保用户' }}</h1>
+                <h1 class="username">{{ form.name || 'Eco-friendly User' }}</h1>
                 <p class="motto">
                   <el-icon><MagicStick /></el-icon>
-                  垃圾分类 · 循环新生
+                  Waste Sorting · Circular Renewal
                 </p>
                 <div class="user-meta">
                   <el-tag type="success" effect="plain">
                     <el-icon><Clock /></el-icon>
-                    加入于 {{ joinDate }}
+                    Joined on {{ joinDate }}
                   </el-tag>
                 </div>
               </div>
               <div v-else class="edit-name-section">
                 <el-input 
                   v-model="form.name" 
-                  placeholder="请输入昵称" 
+                  placeholder="Please enter nickname" 
                   size="large"
                   maxlength="20"
                   show-word-limit
@@ -72,26 +72,26 @@
             </div>
           </div>
 
-          <!-- 信息卡片 -->
+          <!-- Information cards -->
           <div class="info-section">
             <div class="section-header">
               <el-icon><InfoFilled /></el-icon>
-              <span>基本信息</span>
+              <span>Basic Information</span>
             </div>
 
             <div class="info-grid">
-              <!-- 城市 -->
+              <!-- City -->
               <div class="info-card">
                 <div class="card-icon city-icon">
                   <el-icon><Location /></el-icon>
                 </div>
                 <div class="card-content">
-                  <div class="card-label">所在城市</div>
-                  <div v-if="!isEditMode" class="card-value">{{ form.city || '未填写' }}</div>
+                  <div class="card-label">City</div>
+                  <div v-if="!isEditMode" class="card-value">{{ form.city || 'Not filled' }}</div>
                   <el-input 
                     v-else 
                     v-model="form.city" 
-                    placeholder="如：深圳" 
+                    placeholder="e.g., Shenzhen" 
                     size="large"
                     class="edit-input"
                   >
@@ -102,18 +102,18 @@
                 </div>
               </div>
 
-              <!-- 国家 -->
+              <!-- Country -->
               <div class="info-card">
                 <div class="card-icon country-icon">
                   <el-icon><Flag /></el-icon>
                 </div>
                 <div class="card-content">
-                  <div class="card-label">国家 / 地区</div>
-                  <div v-if="!isEditMode" class="card-value">{{ form.country || '未填写' }}</div>
+                  <div class="card-label">Country / Region</div>
+                  <div v-if="!isEditMode" class="card-value">{{ form.country || 'Not filled' }}</div>
                   <el-input 
                     v-else 
                     v-model="form.country" 
-                    placeholder="如：中国" 
+                    placeholder="e.g., China" 
                     size="large"
                     class="edit-input"
                   >
@@ -126,7 +126,7 @@
             </div>
           </div>
 
-          <!-- 操作按钮 -->
+          <!-- Action buttons -->
           <div class="action-bar">
             <el-button 
               v-if="!isEditMode"
@@ -137,7 +137,7 @@
               @click="toggleEditMode"
             >
               <el-icon><EditPen /></el-icon>
-              编辑个人资料
+              Edit Profile
             </el-button>
             
             <template v-else>
@@ -148,7 +148,7 @@
                 @click="cancelEdit"
               >
                 <el-icon><Close /></el-icon>
-                取消
+                Cancel
               </el-button>
               <el-button 
                 type="success" 
@@ -159,7 +159,7 @@
                 @click="handleSave"
               >
                 <el-icon><Check /></el-icon>
-                保存修改
+                Save Changes
               </el-button>
             </template>
           </div>
@@ -167,7 +167,7 @@
       </el-card>
     </div>
 
-    <!-- 隐藏的文件选择器 -->
+    <!-- Hidden file selector -->
     <input 
       ref="fileInput" 
       type="file" 
@@ -206,7 +206,7 @@ const avatarUrl = ref('')
 const joinDate = ref('')
 const userInfoId = ref('')
 
-// 文件输入引用
+// File input reference
 const fileInput = ref(null)
 
 const originalAvatarUrl = ref('')
@@ -218,9 +218,9 @@ const toggleEditMode = () => {
 }
 
 const cancelEdit = () => {
-  ElMessageBox.confirm('确定要取消编辑吗？未保存的更改将丢失', '提示', {
-    confirmButtonText: '确定取消',
-    cancelButtonText: '继续编辑',
+  ElMessageBox.confirm('Are you sure you want to cancel editing? Unsaved changes will be lost', 'Prompt', {
+    confirmButtonText: 'Confirm Cancel',
+    cancelButtonText: 'Continue Editing',
     type: 'warning',
   }).then(() => {
     Object.assign(form, { ...originalForm })
@@ -231,7 +231,7 @@ const cancelEdit = () => {
 
 const handleSave = async () => {
   if (!form.name || form.name.trim() === '') {
-    ElMessage.warning('请输入昵称')
+    ElMessage.warning('Please enter a nickname')
     return
   }
 
@@ -247,35 +247,35 @@ const handleSave = async () => {
     }
 
     const response = await UpdateProfile(profileData)
-    // 更新store中的用户信息（包括姓名和头像）
+    // Update user information in store (including name and avatar)
     userStore.updateUserInfo({
       name: form.name,
       avatar: avatarUrl.value
     })
-    ElMessage.success('保存成功')
+    ElMessage.success('Saved successfully')
     isEditMode.value = false
     Object.assign(originalForm, { ...form })
   } catch (err) {
-    console.error('保存失败:', err)
-    ElMessage.error('保存失败，请重试')
+    console.error('Save failed:', err)
+    ElMessage.error('Save failed, please try again')
   } finally {
     saving.value = false
   }
 }
 
-// 👇 头像上传逻辑
+// 👇 Avatar upload logic
 const handleAvatarClick = () => {
   if (isEditMode.value) {
     fileInput.value?.click()
   }
 }
 
-// 压缩图片函数
+// Image compression function
 const compressImage = (file) => {
   return new Promise((resolve, reject) => {
     const targetSize = 5 * 1024 * 1024
     
-    // 如果图片本身就小于目标大小，直接返回原图
+    // If the image is already smaller than the target size, return the original
     if (file.size <= targetSize) {
       resolve(file)
       return
@@ -285,22 +285,22 @@ const compressImage = (file) => {
     const ctx = canvas.getContext('2d')
     const img = new Image()
     
-    // 启用图像平滑
+    // Enable image smoothing
     ctx.imageSmoothingEnabled = true
     ctx.imageSmoothingQuality = 'high'
     
     img.onload = () => {
       try {
-        // 计算目标尺寸
+        // Calculate target dimensions
         let width = img.width
         let height = img.height
         
-        // 更简单的缩放计算方式
+        // Simpler scaling calculation
         const scaleRatio = Math.min(0.95, Math.sqrt(targetSize / file.size))
         width = Math.floor(width * scaleRatio)
         height = Math.floor(height * scaleRatio)
         
-        // 确保最小尺寸（不低于200x200）
+        // Ensure minimum size (not less than 200x200)
         const minWidth = 200
         const minHeight = 200
         if (width < minWidth) {
@@ -317,15 +317,15 @@ const compressImage = (file) => {
         canvas.width = width
         canvas.height = height
         
-        // 绘制图片
+        // Draw image
         ctx.drawImage(img, 0, 0, width, height)
         
-        // 单次压缩
+        // Single compression
         const quality = Math.min(0.9, (targetSize / file.size) * 0.85)
         
         canvas.toBlob((blob) => {
           if (!blob) {
-            reject(new Error('图片压缩失败'))
+            reject(new Error('Image compression failed'))
             return
           }
           
@@ -335,25 +335,25 @@ const compressImage = (file) => {
             lastModified: Date.now()
           })
           
-          // 返回压缩后的文件
+          // Return the compressed file
           resolve(compressedFile)
         }, 'image/jpeg', quality)
       } catch (error) {
-        reject(new Error(`压缩过程出错: ${error.message}`))
+        reject(new Error(`Compression process error: ${error.message}`))
       }
     }
     
     img.onerror = () => {
-      reject(new Error('图片加载失败'))
+      reject(new Error('Image loading failed'))
     }
     
-    // 加载图片
+    // Load image
     const reader = new FileReader()
     reader.onload = (e) => {
       img.src = e.target.result
     }
     reader.onerror = () => {
-      reject(new Error('文件读取失败'))
+      reject(new Error('File reading failed'))
     }
     reader.readAsDataURL(file)
   })
@@ -364,18 +364,18 @@ const onFileSelected = async (event) => {
   if (!file) return
 
   if (!file.type.startsWith('image/')) {
-    ElMessage.error('请选择图片文件')
+    ElMessage.error('Please select an image file')
     return
   }
 
   let processedFile = file
   
   try {
-    ElMessage.info('正在加载图片...')
+    ElMessage.info('Loading image...')
     processedFile = await compressImage(file)
   } catch (error) {
-    console.error('图片压缩失败:', error)
-    ElMessage.error(`图片压缩失败: ${error.message || '未知错误'}`)
+    console.error('Image compression failed:', error)
+    ElMessage.error(`Image compression failed: ${error.message || 'Unknown error'}`)
     processedFile = file
   }
 
@@ -385,22 +385,22 @@ const onFileSelected = async (event) => {
   try {
     const res = await UploadAvatar(formData)
     if (res?.success && res?.data) {
-      // 更新头像URL用于预览
+      // Update avatar URL for preview
       avatarUrl.value = res.data
-      ElMessage.success('头像上传成功')
+      ElMessage.success('Avatar uploaded successfully')
     } else {
-      throw new Error(res?.message || '上传失败')
+      throw new Error(res?.message || 'Upload failed')
     }
   } catch (err) {
-    console.error('头像上传失败:', err)
-    ElMessage.error('头像上传失败，请重试')
+    console.error('Avatar upload failed:', err)
+    ElMessage.error('Avatar upload failed, please try again')
   } finally {
-    // 重置 input，确保同一文件可重复上传
+    // Reset input to ensure the same file can be re-uploaded
     event.target.value = ''
   }
 }
 
-// 粒子背景（保持不变）
+// Particle background (keep unchanged)
 const initParticles = () => {
   const canvas = particleCanvas.value
   if (!canvas) return
@@ -456,16 +456,16 @@ const initParticles = () => {
   })
 }
 
-// 👇 页面加载：同时获取资料 + 头像
+// 👇 Page loading: fetch profile + avatar simultaneously
 onMounted(async () => {
   initParticles()
 
   try {
-    // 1. 获取用户基本信息（包括头像）
+    // 1. Get user basic information (including avatar)
     const profileRes = await GetProfile({ userId: userStore.id })
     if (profileRes?.data) {
       const d = profileRes.data
-      form.name = d.name || userStore.name || '环保用户'
+      form.name = d.name || userStore.name || 'Eco-friendly User'
       form.city = d.city || ''
       form.country = d.country || ''
       userInfoId.value = d.id || ''
@@ -476,7 +476,7 @@ onMounted(async () => {
     }
   } catch (err) {
     console.error(err)
-    ElMessage.error('加载失败')
+    ElMessage.error('Loading failed')
   } finally {
     loading.value = false
   }
@@ -569,7 +569,7 @@ onMounted(async () => {
   padding: 0;
 }
 
-/* 顶部区域 */
+/* Top section */
 .top-section { 
   display: flex; 
   align-items: center; 
@@ -683,7 +683,7 @@ onMounted(async () => {
   font-weight: 600;
 }
 
-/* 信息区域 */
+/* Information section */
 .info-section {
   padding: 3rem 4rem;
 }
@@ -792,7 +792,7 @@ onMounted(async () => {
   font-weight: 600;
 }
 
-/* 操作按钮 */
+/* Action buttons */
 .action-bar {
   text-align: center;
   padding: 2rem 4rem 3rem;
@@ -843,7 +843,7 @@ onMounted(async () => {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* 响应式 */
+/* Responsive */
 @media (max-width: 1024px) {
   .top-section { 
     flex-direction: column; 

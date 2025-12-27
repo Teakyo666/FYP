@@ -49,12 +49,12 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public String saveImage(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("文件为空");
+            throw new IllegalArgumentException("The file is empty.");
         }
 
         String contentType = file.getContentType();
         if (contentType == null || !contentType.startsWith("image/")) {
-            throw new IllegalArgumentException("仅支持图片格式");
+            throw new IllegalArgumentException("Only supports image format");
         }
 
         LocalDate now = LocalDate.now();

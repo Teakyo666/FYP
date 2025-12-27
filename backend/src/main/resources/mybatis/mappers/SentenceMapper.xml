@@ -5,35 +5,35 @@
 
 <mapper namespace="com.example.backend.Mappers.SentenceMapper">
 
-    <!-- 结果集映射：数据库下划线字段 → DO驼峰字段 -->
+    <!-- Result mapping: Database underscore fields → DO camelCase fields -->
     <resultMap id="SentenceResultMap" type="com.example.backend.POJO.DO.SentenceDO">
-        <id column="id" property="id"/>  <!-- 主键 -->
+        <id column="id" property="id"/>  <!-- Primary key -->
         <result column="sentence" property="sentence"/>
-        <!-- 核心：数据库create_date → DO的createDate；类型自动适配LocalDateTime -->
+        <!-- Core: Database create_date → DO's createDate; type automatically adapts to LocalDateTime -->
         <result column="create_date" property="createDate"/>
-        <!-- 数据库create_by → DO的createBy -->
+        <!-- Database create_by → DO's createBy -->
         <result column="create_by" property="createBy"/>
     </resultMap>
 
-    <!-- 插入：去掉id（自增），字段名匹配数据库 -->
+    <!-- Insert: exclude id (auto-increment), field names match database -->
     <insert id="insert" parameterType="com.example.backend.POJO.DO.SentenceDO">
         INSERT INTO sentence (
         sentence, create_date, create_by
         ) VALUES (
         #{sentence}, #{createDate}, #{createBy}
         )
-        <!-- 回填自增ID到DO的id字段 -->
+        <!-- Backfill auto-increment ID to DO's id field -->
         <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
             SELECT LAST_INSERT_ID()
         </selectKey>
     </insert>
 
-    <!-- 删除：参数类型Long（匹配DO的id类型） -->
+    <!-- Delete: parameter type Long (matches DO's id type) -->
     <delete id="deleteById" parameterType="java.lang.Long">
         DELETE FROM sentence WHERE id = #{id}
     </delete>
 
-    <!-- 更新：字段名匹配数据库，只更业务字段 -->
+    <!-- Update: field names match database, only update business fields -->
     <update id="updateById" parameterType="com.example.backend.POJO.DO.SentenceDO">
         UPDATE sentence
         SET
@@ -43,20 +43,30 @@
         WHERE id = #{id}
     </update>
 
-    <!-- 根据ID查询：只查数据库存在的字段 -->
+    <!-- Query by ID: only query fields that exist in database -->
     <select id="selectById" parameterType="java.lang.Long" resultMap="SentenceResultMap">
         SELECT id, sentence, create_date, create_by
         FROM sentence
         WHERE id = #{id}
     </select>
 
-    <!-- 查询所有：字段匹配数据库 -->
+    <!-- random sentence-->
+    <select id="selectRandomByJump" resultType="com.example.backend.POJO.DO.SentenceDO">
+        SELECT * FROM sentence
+        WHERE id >= (
+            SELECT FLOOR(RAND() * (SELECT COALESCE(MAX(id), 1) FROM sentence)) + 1
+        )
+        ORDER BY id
+            LIMIT 1
+    </select>
+
+    <!-- Query all: field names match database -->
     <select id="selectAll" resultMap="SentenceResultMap">
         SELECT id, sentence, create_date, create_by
         FROM sentence
     </select>
 
-    <!-- 条件查询（支持句子内容模糊查询） -->
+    <!-- Conditional query (supports fuzzy search by sentence content) -->
     <select id="selectByCondition" parameterType="String" resultMap="SentenceResultMap">
         SELECT id, sentence, create_date, create_by
         FROM sentence
