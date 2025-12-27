@@ -8,6 +8,7 @@ target/
 .vscode/
 *.iml
 *.project
+backend/.idea/
 
 # 日志 & 临时文件
 logs/
