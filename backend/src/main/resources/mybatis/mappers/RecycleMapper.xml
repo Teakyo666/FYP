@@ -70,12 +70,18 @@
     </select>
 
     <!-- Conditional query (fuzzy search by name) -->
-    <select id="selectByCondition" parameterType="java.lang.String" resultMap="RecycleResultMap">
+    <select id="selectByCondition" resultMap="RecycleResultMap">
         SELECT id, country, city, address, name, user_id, description
         FROM recycle_place
         <where>
             <if test="name != null and name != ''">
                 AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="country != null and country != ''">
+                AND country = #{country}
+            </if>
+            <if test="city != null and city != ''">
+                AND city = #{city}
             </if>
         </where>
         ORDER BY id DESC

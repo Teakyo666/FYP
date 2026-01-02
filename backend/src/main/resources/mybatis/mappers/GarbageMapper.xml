@@ -27,6 +27,13 @@
         FROM garbage
         WHERE id = #{id}
     </select>
+    <!-- 3. Query single record by name -->
+    <select id="selectByName" parameterType="String" resultMap="GarbageResultMap">
+        SELECT id, name, category, title, reason
+        FROM garbage
+        WHERE name = #{name}
+    </select>
+
     <!-- 4. Query all garbage information -->
     <select id="selectAll" resultMap="GarbageResultMap">
         SELECT id, name, category, title, reason

@@ -164,7 +164,12 @@ const handleRegister = async () => {
   } catch (error) {
     // Network exception/API call failure
     console.error("Registration API call failed:", error);
-    alert("Network error, please check if the backend is running!");
+    // Check if the error contains the backend response with message
+    if (error && error.message) {
+      alert(error.message);
+    } else {
+      alert("Network error, please check if the backend is running!");
+    }
   } finally {
     // Close loading status
     isLoading.value = false;

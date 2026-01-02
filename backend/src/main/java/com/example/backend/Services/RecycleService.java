@@ -9,5 +9,5 @@ public interface RecycleService {
     Result UpdatePlace(RecycleDO recycleDO);
     Result SearchPlace(String Country, String City);
     Result GetPlace(String id);
-    Result listPlaces(Integer page, Integer size, String name);
+    Result listPlaces(Integer page, Integer size, String name, String Country, String City);
 }

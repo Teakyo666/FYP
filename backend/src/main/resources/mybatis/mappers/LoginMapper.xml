@@ -37,7 +37,6 @@
     <select id="selectAll" resultMap="LoginBaseMap">
         SELECT id, username, password, role
         FROM user
-        ORDER BY update_time DESC <!-- Order by update time descending -->
     </select>
 
     <!-- 5. Conditional query (only concatenate conditions when not null, to avoid SQL syntax errors) -->
@@ -49,10 +48,9 @@
                 AND username LIKE CONCAT('%', #{username}, '%') <!-- Fuzzy query -->
             </if>
             <if test="role != null and role.trim() != ''">
-                AND role = #{role} <!-- Exact query -->
+                AND role = #{role}
             </if>
         </where>
-        ORDER BY update_time DESC
     </select>
 
     <!-- 6. update -->

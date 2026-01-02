@@ -4,7 +4,7 @@ import { useUserStore } from "@/store/index"
 import { useMenuStore } from "@/store/menu"
 import Dashboard from '@/views/Dashboard.vue'
 
-// 1. 静态路由（永远存在）
+// 1. Static routes (always exist)
 const constantRoutes = [
   { path: "/", redirect: "/login" },
 
@@ -13,7 +13,7 @@ const constantRoutes = [
   { path: "/forget-password", component: () => import("@/views/ForgetPassword/index.vue") },
   { path: "/reset-password",  component: () => import("@/views/ResetPassword/index.vue") },
 
-  // 唯一后台入口
+  // Single dashboard entry
   {
     path: "/dashboard",
     component: Dashboard,
@@ -59,32 +59,36 @@ const constantRoutes = [
         path: 'garbage/place',
         component: () => import('@/views/dashboard/Garbage/place.vue')
       },
+      {
+        path: 'garbage/placecheck',
+        component: () => import('@/views/dashboard/Garbage/placecheck.vue')
+      },
 
     ]
   }
 ]
 
-// 2. 创建路由实例
+// 2. Create router instance
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: constantRoutes,
   scrollBehavior: () => ({ top: 0 })
 })
 
-// 3. 真正的数据驱动动态路由注册（只看 menu.js 就行！）
+// 3. True data-driven dynamic route registration (just look at menu.js!)
 function registerDynamicRoutes() {
   const menuStore = useMenuStore()
   const userStore = useUserStore()
 
-  // 只有登录了才注册
+  // Only register after login
   if (!userStore.role) return
 
-  // 初始化菜单
+  // Initialize menus
   menuStore.initMenus(userStore.role)
 
-  // 遍历配置的所有菜单，根据当前角色能看到的自动注册路由
+  // Iterate through all configured menus, automatically register routes based on what the current role can see
   menuStore.allowedMenus.forEach(menu => {
-    // 防止重复注册（刷新页面也会走这里）
+    // Prevent duplicate registration (also happens on page refresh)
     if (router.hasRoute(menu.path)) return
 
     router.addRoute("dashboard", {
@@ -94,16 +98,16 @@ function registerDynamicRoutes() {
     })
   })
 
-  // 注册一个终极兜底：任何没匹配到的子路径都跳转到当前角色默认页面
+  // Register a final fallback: redirect any unmatched sub-paths to the current role's default page
   router.addRoute("dashboard", {
     path: "/dashboard/:pathMatch(.*)*",
     redirect: () => menuStore.defaultPath
   })
 }
 
-// 4. 路由守卫
+// 4. Route guard
 router.beforeEach((to, from, next) => {
-  // Pinia 还没初始化（首次加载）
+  // Pinia not initialized yet (first load)
   if (!window.$pinia) {
     next()
     return
@@ -113,17 +117,17 @@ router.beforeEach((to, from, next) => {
   const isLogin = !!userStore.role
 
   if (isLogin) {
-    // 关键：登录后立刻把有权限的路由全部注册进去（只执行一次就够了）
+    // Key: register all authorized routes immediately after login (only execute once is enough)
     registerDynamicRoutes()
 
-    // 已登录还去登录页？踢回后台
+    // Trying to go to login page when already logged in? Redirect back to dashboard
     if (to.path === "/login") {
       next("/dashboard")
     } else {
       next()
     }
   } else {
-    // 未登录想访问需要登录的页面 → 去登录页
+    // Trying to access pages requiring login when not logged in → go to login page
     if (to.meta.requiresAuth) {
       next("/login")
     } else {

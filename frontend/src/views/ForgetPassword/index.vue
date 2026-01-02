@@ -78,18 +78,12 @@ const validateForm = () => {
 // Core: Request token logic (only modify redirect parameter: email→token)
 const handleApplyToken = async () => {
   try {
-    // 1. Frontend form validation
     if (!validateForm()) return;
-
-    // 2. Show loading status
     isLoading.value = true;
-
-    // 3. Call backend request token API (pass email)
     const res = await applyToken({
-      username: tokenForm.value.email, // Backend receiving field name (consistent with registration)
+      username: tokenForm.value.email,
     });
 
-    // 4. API success: extract token and redirect (core modification: pass token instead of email)
     if (res.success) {
       // Extract token returned by backend
       const token = res.data?.token;
@@ -102,7 +96,7 @@ const handleApplyToken = async () => {
       // Redirect and carry token parameter (replace the original email parameter)
       router.push({
         path: "/reset-password",
-        query: { token: token }, // Key modification: pass token
+        query: { token: token },
       });
     } else {
       alert(res.message || "Token request failed, please check if the email is correct!");
@@ -111,7 +105,6 @@ const handleApplyToken = async () => {
     console.error("Request token API call failed:", error);
     alert("Network error, please check if the backend is running!");
   } finally {
-    // Close loading status
     isLoading.value = false;
   }
 };

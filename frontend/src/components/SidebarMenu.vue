@@ -4,7 +4,7 @@
     <div class="logo">
       <div class="logo-icon">♻️</div>
       <div class="logo-text">
-        <div class="logo-title">环保回收</div>
+        <div class="logo-title">EcoMind</div>
         <div class="logo-subtitle">Green System</div>
       </div>
     </div>
@@ -20,7 +20,7 @@
       >
         <div class="menu-icon-wrapper">
           <el-icon>
-            <component :is="menu.icon" />
+            <component :is="getIconComponent(menu.icon)" />
           </el-icon>
         </div>
         <span class="menu-text">{{ menu.title }}</span>
@@ -42,21 +42,27 @@ import { useUserStore } from '@/store/index'
 import { useMenuStore } from '@/store/menu'
 import {
   House,
-  UserFilled,
-  Van,
   HelpFilled,
   User,
-  Search
+  Search,
+  Delete,
+  Message,
+  Location,
+  Check,
+  Edit,
 } from '@element-plus/icons-vue'
 
 // 导入图标组件
 const icons = {
   House,
-  UserFilled,
-  Van,
   HelpFilled,
   User,
-  Search
+  Search,
+  Delete,
+  Message,
+  Location,
+  Check,
+  Edit,
 }
 
 const route = useRoute()
@@ -85,6 +91,11 @@ const isActiveMenu = (menuPath) => {
 // 导航到指定路径
 const navigateTo = (path) => {
   router.push(path)
+}
+
+// 获取图标组件
+const getIconComponent = (iconName) => {
+  return icons[iconName] || Search // 默认返回Search图标，避免错误
 }
 </script>
 

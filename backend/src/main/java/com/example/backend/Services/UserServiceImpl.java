@@ -50,6 +50,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result updateUser(LoginDO loginDO){
         Result result = new Result();
+        if(loginDO.getPassword() == null){
+            LoginDO lo = loginMapper.selectById(loginDO.getId());
+            loginDO.setPassword(lo.getPassword());
+        }else{
+            String PasswordTK = PasswordToken.encode(loginDO.getPassword());
+            loginDO.setPassword(PasswordTK);
+        }
         loginMapper.update(loginDO);
         result.setSuccess(Boolean.TRUE);
         result.setMessage("update user success");

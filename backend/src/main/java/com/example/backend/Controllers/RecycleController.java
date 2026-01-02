@@ -40,8 +40,10 @@ public class RecycleController {
     public Result listPlaces(
         @RequestParam(defaultValue = "1") Integer page,
         @RequestParam(defaultValue = "10") Integer size,
-        @RequestParam(required = false) String name
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String country,
+        @RequestParam(required = false) String city
     ) {
-        return recycleService.listPlaces(page, size, name);
+        return recycleService.listPlaces(page, size, name, country, city);
     }
 }

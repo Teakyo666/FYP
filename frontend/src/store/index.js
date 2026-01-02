@@ -9,7 +9,7 @@ export const useUserStore = defineStore("user", {
   }),
 
   actions: {
-    // 登录：
+    // Login:
     login(userInfo) {
       this.role = userInfo.role;
       this.id = userInfo.id;
@@ -21,7 +21,7 @@ export const useUserStore = defineStore("user", {
       localStorage.setItem('avatar', userInfo.avatar || '');
     },
     
-    // 退出登录：清空role和id
+    // Logout: Clear role and id
     logout() {
       this.role = "";
       this.id = "";
@@ -30,7 +30,7 @@ export const useUserStore = defineStore("user", {
       localStorage.clear();
     },
 
-    // 更新用户信息（包括头像）
+    // Update user information (including avatar)
     updateUserInfo(userInfo) {
       if (userInfo.name) {
         this.name = userInfo.name;

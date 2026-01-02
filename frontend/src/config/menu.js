@@ -1,16 +1,16 @@
 // src/config/menu.js
-// 菜单配置文件
+// Menu configuration file
 
-// 定义各个角色的菜单项
+// Define menu items for each role
 export const menuConfig = {
-  // 所有用户都能看到的菜单
+  // Common menus visible to all users
   common: [
     {
       path: '/dashboard',
       name: 'Dashboard',
       component: 'dashboard/Home',
       icon: 'House',
-      title: '仪表盘',
+      title: 'Home',
       roles: ['admin', 'volunteer', 'recycler', 'customer'],
       order: 0
     },
@@ -19,20 +19,20 @@ export const menuConfig = {
       name: 'GarbageQuery',
       component: 'dashboard/Garbage/query',
       icon: 'Search',
-      title: '垃圾分类查询',
+      title: 'Garbage Classification',
       roles: ['admin', 'volunteer', 'recycler', 'customer'],
       order: 0
     }
   ],
   
-  // 管理员专属菜单
+  // Administrator exclusive menus
   admin: [
     {
       path: '/dashboard/admin/garbage',
       name: 'AdminGarbage',
       component: 'dashboard/admin/garbage',
       icon: 'Delete',
-      title: '垃圾管理',
+      title: 'Garbage Management',
       roles: ['admin'],
       order: 2
     },
@@ -41,7 +41,7 @@ export const menuConfig = {
       name: 'AdminUser',
       component: 'dashboard/admin/user',
       icon: 'User',
-      title: '用户管理',
+      title: 'User Management',
       roles: ['admin'],
       order: 2
     },
@@ -49,8 +49,8 @@ export const menuConfig = {
       path: '/dashboard/admin/AI',
       name: 'AdminAI',
       component: 'dashboard/admin/AI',
-      icon: 'Robot',
-      title: 'AI生成管理',
+      icon: 'HelpFilled',
+      title: 'AI Generation Management',
       roles: ['admin'],
       order: 2
     },
@@ -59,34 +59,34 @@ export const menuConfig = {
       name: 'AdminApply',
       component: 'dashboard/admin/apply',
       icon: 'Check',
-      title: '申请管理',
+      title: 'Apply Role Management',
       roles: ['admin'],
       order: 2
     },
     
   ],
   
-  // 志愿者专属菜单
+  // Volunteer exclusive menus
   volunteer: [
   ],
   
-  // 回收员专属菜单
+  // Recycler exclusive menus
   recycler: [
   ],
   
-  // 普通用户专属菜单
+  // Customer exclusive menus
   customer: [
     
   ],
   
-  // 通用功能菜单
+  // General function menus
   general: [
     {
       path: '/dashboard/garbage/sentence',
       name: 'GarbageSentence',
       component: 'dashboard/Garbage/sentence',
-      icon: 'Message',
-      title: '垃圾提示信息管理',
+      icon: 'Edit',
+      title: 'Sentence Management',
       roles: ['admin', 'volunteer'],
       order: 1
     },
@@ -95,7 +95,16 @@ export const menuConfig = {
       name: 'GarbagePlace',
       component: 'dashboard/Garbage/place',
       icon: 'Location',
-      title: '垃圾地点管理',
+      title: 'Recycle Station Management',
+      roles: ['admin', 'recycler'],
+      order: 1
+    },
+    {
+      path: '/dashboard/garbage/placecheck',
+      name: 'GarbagePlaceCheck',
+      component: 'dashboard/Garbage/placecheck',
+      icon: 'Location',
+      title: 'Recycle Station Finder',
       roles: ['admin', 'volunteer', 'recycler', 'customer'],
       order: 1
     },
@@ -103,7 +112,7 @@ export const menuConfig = {
   ]
 }
 
-// 获取当前用户角色可访问的菜单
+// Get menus accessible to the current user role
 export const getUserMenus = (role) => {
   let menus = [].concat(menuConfig.common)
   
@@ -124,10 +133,10 @@ export const getUserMenus = (role) => {
       break
   }
   
-  // 添加通用功能菜单
+  // Add general function menus
   menus = menus.concat(menuConfig.general)
   
-  // 根据order属性排序
+  // Sort by order property
   menus.sort((a, b) => (a.order || 0) - (b.order || 0))
   
   return menus

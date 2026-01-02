@@ -9,10 +9,10 @@ export const useMenuStore = defineStore("menu", {
   }),
 
   getters: {
-    // 获取当前用户可访问的菜单
+    // Get menus accessible to current user
     allowedMenus: (state) => state.menus,
     
-    // 获取默认路径（第一个菜单项的路径）
+    // Get default path (path of first menu item)
     defaultPath: (state) => {
       const firstMenu = state.menus.find(menu => menu.roles.includes(localStorage.getItem("role")))
       return firstMenu ? firstMenu.path : '/dashboard'
@@ -20,17 +20,17 @@ export const useMenuStore = defineStore("menu", {
   },
 
   actions: {
-    // 初始化菜单
+    // Initialize menus
     initMenus(role) {
       this.menus = getUserMenus(role)
     },
     
-    // 切换菜单折叠状态
+    // Toggle menu collapse state
     toggleCollapse() {
       this.collapsed = !this.collapsed
     },
     
-    // 根据路径获取菜单项
+    // Get menu item by path
     getMenuByPath(path) {
       return this.menus.find(menu => menu.path === path)
     }

@@ -1,70 +1,156 @@
 <template>
   <div class="user-management">
+    <!-- Header with clean design -->
     <div class="header">
-      <h1>User Management</h1>
-      <p>Manage user information in the system</p>
+      <div class="header-content">
+        <div class="header-text">
+          <h1>
+            <span class="icon-wrapper">👥</span>
+            User Management
+          </h1>
+          <p>Manage waste classification system users efficiently</p>
+        </div>
+        <div class="header-stats">
+          <div class="stat-card">
+            <div class="stat-icon">♻️</div>
+            <div class="stat-info">
+              <div class="stat-number">{{ pagination.total }}</div>
+              <div class="stat-label">Total Users</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Search and operation bar -->
+    <!-- Search and operation toolbar -->
     <div class="toolbar">
-      <el-row :gutter="20">
-        <el-col :span="18">
-          <el-input
-            v-model="searchForm.username"
-            placeholder="Please enter username"
-            clearable
-            style="width: 300px"
-            @keyup.enter="handleSearch"
-          >
-            <template #append>
-              <el-button :icon="Search" @click="handleSearch">Search</el-button>
-            </template>
-          </el-input>
-          <el-button style="margin-left: 10px" @click="clearSearch">Clear Search</el-button>
-        </el-col>
-        <el-col :span="6" class="text-right">
-          <el-button type="primary" :icon="Plus" @click="handleAdd">Add User</el-button>
-        </el-col>
-      </el-row>
+      <el-card shadow="hover" class="toolbar-card">
+        <el-row :gutter="20" align="middle">
+          <el-col :span="18">
+            <div class="search-container">
+              <el-input
+                v-model="searchForm.username"
+                placeholder="Search by email address..."
+                clearable
+                class="search-input"
+                @keyup.enter="handleSearch"
+              >
+                <template #prefix>
+                  <el-icon><Search /></el-icon>
+                </template>
+              </el-input>
+              <el-button 
+                type="primary" 
+                :icon="Search" 
+                @click="handleSearch"
+                class="search-btn"
+              >
+                Search
+              </el-button>
+              <el-button 
+                @click="clearSearch"
+                class="clear-btn"
+              >
+                Clear
+              </el-button>
+            </div>
+          </el-col>
+          <el-col :span="6" class="text-right">
+            <el-button 
+              type="primary" 
+              :icon="Plus" 
+              @click="handleAdd"
+              class="add-btn"
+            >
+              <span>Add User</span>
+            </el-button>
+          </el-col>
+        </el-row>
+      </el-card>
     </div>
 
-    <!-- Data table -->
+    <!-- Data table with modern styling -->
     <div class="table-container">
-      <el-table
-        :data="tableData"
-        v-loading="loading"
-        element-loading-text="Loading..."
-        border
-        stripe
-        style="width: 100%"
-      >
-        <el-table-column prop="id" label="ID" width="80" />
-        <el-table-column prop="username" label="Username" min-width="150" />
-        <el-table-column prop="password" label="Password" min-width="150" />
-        <el-table-column prop="role" label="Role" width="120">
-          <template #default="scope">
-            <el-tag :type="getRoleTagType(scope.row.role)">
-              {{ getRoleText(scope.row.role) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="Information" width="100" fixed="right">
-          <template #default="scope">
-            <el-button size="small" @click="handleViewInfo(scope.row)">View</el-button>
-          </template>
-        </el-table-column>
-
-        <!-- Handle user information viewing -->
-        <el-table-column label="Operations" width="150" fixed="right">
-          <template #default="scope">
-            <el-button size="small" @click="handleEdit(scope.row)">Edit</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.row)">Delete</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-card shadow="hover" class="table-card">
+        <el-table
+          :data="tableData"
+          v-loading="loading"
+          element-loading-text="Loading data..."
+          stripe
+          style="width: 100%"
+          :header-cell-style="{ background: '#fafafa', color: '#333', fontWeight: '600', fontSize: '14px' }"
+        >
+          <el-table-column prop="id" label="User ID" width="280">
+            <template #default="scope">
+              <span class="id-text">{{ scope.row.id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="username" label="Email Address" min-width="200">
+            <template #default="scope">
+              <div class="email-cell">
+                <el-icon class="email-icon"><Message /></el-icon>
+                <span>{{ scope.row.username }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="password" label="Password" min-width="150">
+            <template #default="scope">
+              <span class="password-text">••••••••</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="role" label="Role" width="150">
+            <template #default="scope">
+              <div class="role-cell">
+                <span class="role-icon">{{ getRoleIcon(scope.row.role) }}</span>
+                <el-tag 
+                  :type="getRoleTagType(scope.row.role)"
+                  effect="plain"
+                  class="role-tag"
+                >
+                  {{ getRoleText(scope.row.role) }}
+                </el-tag>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="Actions" width="280" fixed="right">
+            <template #default="scope">
+              <div class="action-buttons">
+                <el-button 
+                  size="small" 
+                  @click="handleViewInfo(scope.row)"
+                  class="view-btn"
+                >
+                  <el-icon><View /></el-icon>
+                  <span>View</span>
+                </el-button>
+                <el-button 
+                  size="small" 
+                  type="primary"
+                  plain
+                  @click="handleEdit(scope.row)"
+                  class="edit-btn"
+                >
+                  <el-icon><Edit /></el-icon>
+                  <span>Edit</span>
+                </el-button>
+                <el-button 
+                  size="small" 
+                  type="danger"
+                  plain
+                  @click="handleDelete(scope.row)"
+                  class="delete-btn"
+                >
+                  <el-icon><Delete /></el-icon>
+                  <span>Delete</span>
+                </el-button>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
     </div>
 
-    <!-- Pagination -->
+    <!-- Pagination with clean styling -->
     <div class="pagination-container">
       <el-pagination
         v-model:current-page="pagination.currentPage"
@@ -74,78 +160,128 @@
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
+        background
+        class="custom-pagination"
       />
     </div>
 
-    <!-- Edit/Add dialog -->
+    <!-- Edit/Add dialog with modern design -->
     <el-dialog
       v-model="dialogVisible"
       :title="dialogTitle"
       width="500px"
       :before-close="handleDialogClose"
+      class="custom-dialog"
     >
       <el-form
         ref="formRef"
         :model="formData"
         :rules="formRules"
         label-width="100px"
+        label-position="left"
+        class="user-form"
       >
-        <el-form-item label="Username" prop="username">
-          <el-input v-model="formData.username" placeholder="Please enter username" />
+        <el-form-item label="Email" prop="username">
+          <el-input 
+            v-model="formData.username" 
+            placeholder="Enter user email address"
+            prefix-icon="Message"
+          />
         </el-form-item>
         <el-form-item label="Password" prop="password">
-          <el-input v-model="formData.password" type="password" placeholder="Please enter password" />
+          <el-input 
+            v-model="formData.password" 
+            type="password" 
+            placeholder="Enter password"
+            prefix-icon="Lock"
+            show-password
+          />
         </el-form-item>
         <el-form-item label="Role" prop="role">
-          <el-select v-model="formData.role" placeholder="Please select role" style="width: 100%">
-            <el-option label="Administrator" value="admin" />
-            <el-option label="Volunteer" value="volunteer" />
-            <el-option label="Recycler" value="recycler" />
-            <el-option label="Regular User" value="customer" />
+          <el-select 
+            v-model="formData.role" 
+            placeholder="Select user role" 
+            style="width: 100%"
+          >
+            <el-option label="Administrator" value="admin">
+              <span class="role-option">
+                <span class="role-option-icon">👤</span>
+                <span>Administrator</span>
+              </span>
+            </el-option>
+            <el-option label="Volunteer" value="volunteer">
+              <span class="role-option">
+                <span class="role-option-icon">🤝</span>
+                <span>Volunteer</span>
+              </span>
+            </el-option>
+            <el-option label="Recycler" value="recycler">
+              <span class="role-option">
+                <span class="role-option-icon">♻️</span>
+                <span>Recycler</span>
+              </span>
+            </el-option>
+            <el-option label="Regular User" value="customer">
+              <span class="role-option">
+                <span class="role-option-icon">👥</span>
+                <span>Regular User</span>
+              </span>
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="handleSubmit">Confirm</el-button>
-        </span>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false" size="default">Cancel</el-button>
+          <el-button type="primary" @click="handleSubmit" size="default">
+            <el-icon class="mr-1"><Check /></el-icon>
+            <span>Confirm</span>
+          </el-button>
+        </div>
       </template>
     </el-dialog>
 
     <!-- User information viewing dialog -->
     <el-dialog
       v-model="infoDialogVisible"
-      title="User Information Details"
+      title="User Information"
       width="500px"
       :close-on-click-modal="false"
+      class="custom-dialog info-dialog"
     >
       <el-form
-        label-width="80px"
+        label-width="100px"
         label-position="left"
+        class="info-form"
       >
         <el-form-item label="Name">
-          <span v-if="!isEditing">{{ userInfo.name }}</span>
-          <el-input v-else v-model="userInfo.name" />
+          <span v-if="!isEditing" class="info-text">{{ userInfo.name || 'Not set' }}</span>
+          <el-input v-else v-model="userInfo.name" placeholder="Enter name" />
         </el-form-item>
         <el-form-item label="City">
-          <span v-if="!isEditing">{{ userInfo.city }}</span>
-          <el-input v-else v-model="userInfo.city" />
+          <span v-if="!isEditing" class="info-text">{{ userInfo.city || 'Not set' }}</span>
+          <el-input v-else v-model="userInfo.city" placeholder="Enter city" />
         </el-form-item>
         <el-form-item label="Country">
-          <span v-if="!isEditing">{{ userInfo.country }}</span>
-          <el-input v-else v-model="userInfo.country" />
+          <span v-if="!isEditing" class="info-text">{{ userInfo.country || 'Not set' }}</span>
+          <el-input v-else v-model="userInfo.country" placeholder="Enter country" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <span class="dialog-footer">
-          <el-button v-if="!isEditing" @click="enableEditing">Edit</el-button>
+        <div class="dialog-footer">
+          <el-button v-if="!isEditing" type="primary" @click="enableEditing" size="default">
+            <el-icon class="mr-1"><Edit /></el-icon>
+            <span>Edit</span>
+          </el-button>
           <template v-else>
-            <el-button type="primary" @click="saveUserInfo">Save</el-button>
-            <el-button @click="cancelEditing">Cancel</el-button>
+            <el-button @click="cancelEditing" size="default">Cancel</el-button>
+            <el-button type="primary" @click="saveUserInfo" size="default">
+              <el-icon class="mr-1"><Check /></el-icon>
+              <span>Save</span>
+            </el-button>
           </template>
-          <el-button @click="infoDialogVisible = false">Close</el-button>
-        </span>
+          <el-button @click="infoDialogVisible = false" size="default" v-if="!isEditing">Close</el-button>
+        </div>
       </template>
     </el-dialog>
   </div>
@@ -154,7 +290,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Search, Plus } from '@element-plus/icons-vue'
+import { Search, Plus, Edit, Delete, View, Message, Check } from '@element-plus/icons-vue'
 import { 
   UserList,
   UserUpdate, 
@@ -163,31 +299,31 @@ import {
 } from '@/api/Users'
 import { GetProfile, UpdateProfile } from '@/api/Home'
 
-// Reactive data
+// Reactive state variables
 const loading = ref(false)
 const dialogVisible = ref(false)
 const infoDialogVisible = ref(false)
 const dialogTitle = ref('')
 const isEdit = ref(false)
 const isEditing = ref(false)
-const currentUserInfo = ref({}) // Save currently viewed user information
+const currentUserInfo = ref({})
 
-// Table data
+// Table data storage
 const tableData = ref([])
 
-// Search form
+// Search form data
 const searchForm = reactive({
   username: ''
 })
 
-// Pagination
+// Pagination configuration
 const pagination = reactive({
   currentPage: 1,
   pageSize: 10,
   total: 0
 })
 
-// Form data
+// Form data for add/edit operations
 const formData = reactive({
   id: '',
   username: '',
@@ -195,7 +331,7 @@ const formData = reactive({
   role: ''
 })
 
-// User information data
+// User detailed information
 const userInfo = reactive({
   id: '',
   username: '',
@@ -210,44 +346,37 @@ const userInfo = reactive({
 
 // Form validation rules
 const formRules = {
-  username: [{ required: true, message: 'Please enter username', trigger: 'blur' }],
+  username: [{ required: true, message: 'Please enter email', trigger: 'blur' }],
   password: [{ required: true, message: 'Please enter password', trigger: 'blur' }],
   role: [{ required: true, message: 'Please select role', trigger: 'change' }]
 }
 
-// Form reference
+// Form reference for validation
 const formRef = ref()
 
-// Search handler
+// Handle search action
 const handleSearch = () => {
   pagination.currentPage = 1
   fetchData()
 }
 
-// Clear search handler
+// Clear search filters
 const clearSearch = () => {
   searchForm.username = ''
   pagination.currentPage = 1
   fetchData()
 }
 
-// Handle user information viewing
+// View user detailed information
 const handleViewInfo = async (row) => {
   try {
     const response = await GetProfile({ userId: row.id })
     if (response && response.success) {
-      // Save current user information
       currentUserInfo.value = response.data || {}
-      
-      // Set fields to display
       userInfo.name = (response.data && response.data.name) || ''
       userInfo.city = (response.data && response.data.city) || ''
       userInfo.country = (response.data && response.data.country) || ''
-      
-      // Reset editing state
       isEditing.value = false
-      
-      // Show information dialog
       infoDialogVisible.value = true
     } else {
       ElMessage.error(response.message || 'Failed to get user information')
@@ -258,29 +387,27 @@ const handleViewInfo = async (row) => {
   }
 }
 
-// Enable editing mode
+// Enable editing mode for user info
 const enableEditing = () => {
   isEditing.value = true
 }
 
-// Save user information
+// Save updated user information
 const saveUserInfo = async () => {
   try {
     const response = await UpdateProfile({
       userId: currentUserInfo.value.id,
-      name: userInfo.value.name,
-      city: userInfo.value.city,
-      country: userInfo.value.country
+      name: userInfo.name,
+      city: userInfo.city,
+      country: userInfo.country
     })
     
     if (response && response.success) {
       ElMessage.success('User information updated successfully')
       isEditing.value = false
-      // Update data in currentUserInfo
-      currentUserInfo.value.name = userInfo.value.name
-      currentUserInfo.value.city = userInfo.value.city
-      currentUserInfo.value.country = userInfo.value.country
-      // May need to refresh user list or other operations
+      currentUserInfo.value.name = userInfo.name
+      currentUserInfo.value.city = userInfo.city
+      currentUserInfo.value.country = userInfo.country
     } else {
       ElMessage.error(response.message || 'Update failed')
     }
@@ -290,43 +417,19 @@ const saveUserInfo = async () => {
   }
 }
 
-// Cancel editing
+// Cancel editing and restore original data
 const cancelEditing = () => {
   isEditing.value = false
-  // Restore original data
-  userInfo.value.name = currentUserInfo.value.name || ''
-  userInfo.value.city = currentUserInfo.value.city || ''
-  userInfo.value.country = currentUserInfo.value.country || ''
+  userInfo.name = currentUserInfo.value.name || ''
+  userInfo.city = currentUserInfo.value.city || ''
+  userInfo.country = currentUserInfo.value.country || ''
 }
 
-// Format label display name
-const formatLabel = (key) => {
-  const labelMap = {
-    'id': 'User ID',
-    'username': 'Username',
-    'role': 'Role',
-    'name': 'Name',
-    'email': 'Email',
-    'phone': 'Phone',
-    'address': 'Address',
-    'city': 'City',
-    'country': 'Country'
-  }
-  // If the corresponding label is not found, convert the key name to English (capitalize first letter)
-  if (!labelMap[key]) {
-    // Try to convert camel case to English description
-    const camelKey = key.replace(/([A-Z])/g, ' $1').trim();
-    return camelKey.charAt(0).toUpperCase() + camelKey.slice(1);
-  }
-  return labelMap[key];
-}
-
-// Fetch data
+// Fetch user list data from API
 const fetchData = async () => {
   try {
     loading.value = true
     
-    // Call the API to get the user list, supporting pagination and search
     const params = {
       page: pagination.currentPage,
       size: pagination.pageSize,
@@ -336,7 +439,6 @@ const fetchData = async () => {
     const response = await UserList(params)
     
     if (response && response.success) {
-      // Ensure data structure is correct
       if (response.data && typeof response.data === 'object') {
         tableData.value = Array.isArray(response.data.list) ? response.data.list : []
         pagination.total = typeof response.data.total === 'number' ? response.data.total : 0
@@ -358,7 +460,7 @@ const fetchData = async () => {
   }
 }
 
-// Handle add
+// Open dialog to add new user
 const handleAdd = () => {
   dialogTitle.value = 'Add User'
   isEdit.value = false
@@ -366,17 +468,16 @@ const handleAdd = () => {
   dialogVisible.value = true
 }
 
-// Handle edit
+// Open dialog to edit existing user
 const handleEdit = (row) => {
   dialogTitle.value = 'Edit User'
   isEdit.value = true
   Object.assign(formData, row)
-  // Clear password field, no need to force password change when editing
   formData.password = ''
   dialogVisible.value = true
 }
 
-// Handle delete
+// Delete user with confirmation
 const handleDelete = (row) => {
   ElMessageBox.confirm(
     `Are you sure you want to delete user "${row.username}"?`,
@@ -399,29 +500,24 @@ const handleDelete = (row) => {
       console.error('Deletion failed:', error)
       ElMessage.error('Deletion failed')
     }
-  }).catch(() => {
-    // User cancelled deletion
-  })
+  }).catch(() => {})
 }
 
-// Submit form
+// Submit form data (add or update)
 const handleSubmit = () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       try {
         let response
         if (isEdit.value) {
-          // Edit - only send necessary fields
           const updateData = {
             Id: formData.id,
             username: formData.username,
             password: formData.password,
             role: formData.role
           }
-          
           response = await UserUpdate(updateData)
         } else {
-          // Add
           const createData = {
             username: formData.username,
             password: formData.password,
@@ -445,13 +541,13 @@ const handleSubmit = () => {
   })
 }
 
-// Handle dialog close
+// Handle dialog close event
 const handleDialogClose = (done) => {
   resetForm()
   done()
 }
 
-// Reset form
+// Reset form to initial state
 const resetForm = () => {
   Object.assign(formData, {
     id: '',
@@ -464,84 +560,431 @@ const resetForm = () => {
   }
 }
 
-// Pagination related methods
+// Handle page size change
 const handleSizeChange = (val) => {
   pagination.pageSize = val
   fetchData()
 }
 
+// Handle current page change
 const handleCurrentChange = (val) => {
   pagination.currentPage = val
   fetchData()
 }
 
-// Get tag type based on role
+// Get tag color type based on role
 const getRoleTagType = (role) => {
   const typeMap = {
     'admin': 'danger',
     'volunteer': 'success',
     'recycler': 'warning',
-    'customer': 'info'
+    'customer': ''
   }
-  return typeMap[role] || 'info'
+  return typeMap[role] || ''
 }
 
-// Get display text based on role
+// Get role display text
 const getRoleText = (role) => {
   const roleMap = {
-    'admin': 'Administrator',
+    'admin': 'Admin',
     'volunteer': 'Volunteer',
     'recycler': 'Recycler',
-    'customer': 'Regular User'
+    'customer': 'User'
   }
-  return roleMap[role] || 'Unknown Role'
+  return roleMap[role] || 'Unknown'
 }
 
-// Fetch data when component mounts
+// Get role icon for waste classification system
+const getRoleIcon = (role) => {
+  const iconMap = {
+    'admin': '👤',
+    'volunteer': '🤝',
+    'recycler': '♻️',
+    'customer': '👥'
+  }
+  return iconMap[role] || '👤'
+}
+
+// Initialize data on component mount
 onMounted(() => {
   fetchData()
 })
 </script>
 
 <style scoped>
+/* Main container with soft background */
 .user-management {
+  padding: 24px;
+  background: #f5f7fa;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Header section with clean design */
+.header {
+  margin-bottom: 24px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 32px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.header-text h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #303133;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  letter-spacing: -0.5px;
+}
+
+.icon-wrapper {
+  font-size: 32px;
+}
+
+.header-text p {
+  color: #606266;
+  font-size: 14px;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Statistics card with modern styling */
+.header-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 16px 24px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+.stat-icon {
+  font-size: 36px;
+}
+
+.stat-info {
+  text-align: left;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Toolbar section styling */
+.toolbar {
+  margin-bottom: 20px;
+}
+
+.toolbar-card {
+  border-radius: 12px;
+  border: none;
+}
+
+.toolbar-card :deep(.el-card__body) {
   padding: 20px;
 }
 
-.header {
-  margin-bottom: 20px;
+.search-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
-.header h1 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 10px;
+.search-input {
+  width: 400px;
 }
 
-.header p {
-  color: #666;
+.search-input :deep(.el-input__wrapper) {
+  border-radius: 8px;
 }
 
-.toolbar {
-  margin-bottom: 20px;
+.search-btn {
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 20px;
+}
+
+.clear-btn {
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 20px;
+}
+
+.add-btn {
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .text-right {
   text-align: right;
 }
 
+/* Table container styling */
 .table-container {
   margin-bottom: 20px;
 }
 
+.table-card {
+  border-radius: 12px;
+  border: none;
+}
+
+.table-card :deep(.el-card__body) {
+  padding: 0;
+}
+
+.table-card :deep(.el-table) {
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.table-card :deep(.el-table th) {
+  font-weight: 600;
+  color: #303133;
+}
+
+.table-card :deep(.el-table td) {
+  color: #606266;
+  font-weight: 400;
+}
+
+.table-card :deep(.el-table__row) {
+  transition: background-color 0.2s;
+}
+
+.table-card :deep(.el-table__row:hover) {
+  background-color: #f5f7fa !important;
+}
+
+/* ID text styling */
+.id-text {
+  color: #606266;
+  font-size: 13px;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+  font-weight: 500;
+}
+
+/* Email cell with icon */
+.email-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #303133;
+  font-weight: 500;
+}
+
+.email-icon {
+  color: #409eff;
+  font-size: 16px;
+}
+
+/* Password display styling */
+.password-text {
+  color: #c0c4cc;
+  font-family: monospace;
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+
+/* Role tag styling */
+.role-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.role-icon {
+  font-size: 18px;
+}
+
+.role-tag {
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.action-buttons .el-button {
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.view-btn {
+  color: #606266;
+  border-color: #dcdfe6;
+  background: #fff;
+}
+
+.view-btn:hover {
+  color: #409eff;
+  border-color: #c6e2ff;
+  background: #ecf5ff;
+}
+
+.edit-btn {
+  padding: 7px 12px;
+}
+
+.delete-btn {
+  padding: 7px 12px;
+}
+
+/* Pagination styling */
 .pagination-container {
   display: flex;
   justify-content: flex-end;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
+.custom-pagination {
+  padding: 0;
+}
+
+/* Dialog styling */
+.custom-dialog :deep(.el-dialog) {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.custom-dialog :deep(.el-dialog__header) {
+  padding: 20px 24px;
+  background: #fafafa;
+  border-bottom: 1px solid #e4e7ed;
+}
+
+.custom-dialog :deep(.el-dialog__title) {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.custom-dialog :deep(.el-dialog__body) {
+  padding: 24px;
+}
+
+.user-form :deep(.el-form-item__label) {
+  font-weight: 600;
+  color: #303133;
+  font-size: 14px;
+}
+
+.user-form :deep(.el-input__wrapper) {
+  border-radius: 6px;
+}
+
+.info-form :deep(.el-form-item) {
+  margin-bottom: 20px;
+}
+
+.info-text {
+  color: #303133;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Dialog footer */
 .dialog-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
+}
+
+.dialog-footer .el-button {
+  border-radius: 6px;
+  height: 36px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Role option in select dropdown */
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.role-option-icon {
+  font-size: 16px;
+}
+
+/* Utility class for icon margin */
+.mr-1 {
+  margin-right: 4px;
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+  .user-management {
+    padding: 16px;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .search-container {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .search-input {
+    width: 100%;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .stat-card {
+    width: 100%;
+  }
 }
 </style>

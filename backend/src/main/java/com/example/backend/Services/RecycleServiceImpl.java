@@ -66,18 +66,17 @@ public class RecycleServiceImpl implements RecycleService {
     }
     
     @Override
-    public Result listPlaces(Integer page, Integer size, String name) {
+    public Result listPlaces(Integer page, Integer size, String name, String country, String city) {
 
         if (page == null || page <= 0) page = 1;
         if (size == null || size <= 0) size = 10;
         if (size > 50) size = 50;
-        
 
         PageHelper.startPage(page, size);
 
         List<RecycleDO> places;
-        if (name != null && !name.trim().isEmpty()) {
-            places = recycleMapper.selectByCondition(name.trim());
+        if ((name != null && !name.trim().isEmpty()) || (country != null && !country.trim().isEmpty()) || (city != null && !city.trim().isEmpty())) {
+            places = recycleMapper.selectByCondition(name, country, city);
         } else {
             places = recycleMapper.selectAll();
         }

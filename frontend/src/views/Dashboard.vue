@@ -16,9 +16,6 @@
           </div>
         </div>
         <div class="header-right">
-          <el-badge :value="3" class="notification-badge">
-            <el-icon class="header-icon"><Bell /></el-icon>
-          </el-badge>
           <el-dropdown trigger="click">
             <div class="user-info">
               <el-avatar 
@@ -70,7 +67,6 @@ import { ElMessageBox, ElMessage } from 'element-plus'
 import SidebarMenu from '@/components/SidebarMenu.vue'
 import {
   Location,
-  Bell,
   SwitchButton,
   User,
   Plus
@@ -91,14 +87,18 @@ onMounted(() => {
 // Get current page name
 const getCurrentPageName = () => {
   const pathMap = {
-    '/dashboard': 'Dashboard',
-    '/dashboard/admin': 'Admin Center',
-    '/dashboard/volunteer': 'Volunteer Center',
-    '/dashboard/recycler': 'Recycler Center',
-    '/dashboard/customer': 'Personal Center',
+    '/dashboard': 'Home',
+    '/dashboard/garbage': 'Garbage Classification',
+    '/dashboard/admin/garbage': 'Admin Garbage Management',
+    '/dashboard/admin/user': 'Admin User Management',
+    '/dashboard/admin/AI': 'AI Generation Management',
+    '/dashboard/admin/apply': 'Apply Role Management',
+    '/dashboard/garbage/sentence': 'Garbage Sentence Management',
+    '/dashboard/garbage/place': 'Recycle Station Management',
+    '/dashboard/add-apply': 'Permission application',
     '/dashboard/profile': 'Profile',
   }
-  return pathMap[route.path] || 'Dashboard'
+  return pathMap[route.path] || 'EcoMind'
 }
 
 // Get role text
@@ -362,22 +362,6 @@ const handleLogout = () => {
   display: flex;
   align-items: center;
   gap: 24px;
-}
-
-.notification-badge {
-  cursor: pointer;
-}
-
-.header-icon {
-  font-size: 22px;
-  color: #606266;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.header-icon:hover {
-  color: #409eff;
-  transform: scale(1.1);
 }
 
 .user-info {

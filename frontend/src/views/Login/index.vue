@@ -13,7 +13,7 @@
         <div class="brand-icon">
           <div class="recycle-icon">♻️</div>
         </div>
-        <h1 class="brand-title">Eco Recycling System</h1>
+        <h1 class="brand-title">EcoMind</h1>
         <p class="brand-slogan">Waste Sorting · Recycling · Better Earth</p>
         
         <div class="features">
@@ -24,6 +24,10 @@
           <div class="feature-item">
             <div class="feature-icon">✓</div>
             <div class="feature-text">Online Recycling Query</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div class="feature-text">Query nearby recycling stations</div>
           </div>
         </div>
       </div>
@@ -250,7 +254,7 @@ const handleLogin = async () => {
     }
   } catch (err) {
     console.error(err)
-    ElMessage.error("Network error, please try again later")
+    ElMessage.error("Please enter a valid username and password")
     refreshCode()
     loginForm.value.code = ""
   } finally {

@@ -1,10 +1,10 @@
 // src/utils/request.js
 import axios from "axios";
 
-// 创建 axios 实例
+// Create axios instance
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 10000, // 超时时间
+  timeout: 10000, // Request timeout
   headers: {
     "Content-Type": "application/json;charset=utf-8",
   },
@@ -12,28 +12,28 @@ const service = axios.create({
 
 service.interceptors.request.use(
   (config) => {
-    return config; // 直接返回配置，不做额外处理
+    return config; // Return configuration directly, no additional processing
   },
   (error) => {
     return Promise.reject(error);
   }
 );
 
-// 响应拦截器：统一处理结果（success: true/false）
+// Response interceptor: Unified processing of results (success: true/false)
 service.interceptors.response.use(
   (response) => {
     const res = response.data;
-    // 后端成功标识：success: true
+    // Backend success indicator: success: true
     if (res.success) {
-      return res; // 直接返回后端数据，页面里直接用 res.data
+      return res; // Return backend data directly, use res.data in page
     } else {
-      // 失败时自动提示错误
-      // 不再使用alert显示错误，改为静默处理
+      // Automatically prompt error on failure
+      // No longer use alert to display error, switch to silent processing
       return Promise.reject(res);
     }
   },
   (error) => {
-    // 不再显示网络异常提示，改为静默处理
+    // No longer display network exception prompt, switch to silent processing
     return Promise.reject(error);
   }
 );

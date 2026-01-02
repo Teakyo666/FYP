@@ -50,8 +50,8 @@
                 </p>
                 <div class="user-meta">
                   <el-tag type="success" effect="plain">
-                    <el-icon><Clock /></el-icon>
-                    Joined on {{ joinDate }}
+                    <el-icon><User /></el-icon>
+                    {{ userStore.role || 'User' }}
                   </el-tag>
                 </div>
               </div>
@@ -263,7 +263,7 @@ const handleSave = async () => {
   }
 }
 
-// 👇 Avatar upload logic
+// Avatar upload logic
 const handleAvatarClick = () => {
   if (isEditMode.value) {
     fileInput.value?.click()
@@ -456,7 +456,7 @@ const initParticles = () => {
   })
 }
 
-// 👇 Page loading: fetch profile + avatar simultaneously
+// Page loading: fetch profile + avatar simultaneously
 onMounted(async () => {
   initParticles()
 
@@ -471,12 +471,27 @@ onMounted(async () => {
       userInfoId.value = d.id || ''
       avatarUrl.value = d.avatar || ''
       Object.assign(originalForm, { ...form })
-      userStore.setName(form.name)
+      // Use updateUserInfo method instead of setName (which doesn't exist)
+      userStore.updateUserInfo({ name: form.name, avatar: d.avatar })
+      joinDate.value = new Date().toLocaleDateString('zh-CN')
+    } else {
+      // Set default values when no user data is returned
+      form.name = userStore.name || 'Eco-friendly User'
+      form.city = ''
+      form.country = ''
+      avatarUrl.value = userStore.avatar || ''
       joinDate.value = new Date().toLocaleDateString('zh-CN')
     }
   } catch (err) {
     console.error(err)
-    ElMessage.error('Loading failed')
+    // Provide more detailed error message
+    ElMessage.error('Loading failed: ' + (err.message || 'Unable to fetch profile'))
+    // Set default values when API call fails
+    form.name = userStore.name || 'Eco-friendly User'
+    form.city = ''
+    form.country = ''
+    avatarUrl.value = userStore.avatar || ''
+    joinDate.value = new Date().toLocaleDateString('zh-CN')
   } finally {
     loading.value = false
   }
@@ -905,3 +920,5 @@ onMounted(async () => {
     text-align: center;
   }
 }</style>
+
+

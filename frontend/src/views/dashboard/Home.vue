@@ -106,7 +106,6 @@ import {
   Clock, Calendar, Refresh, RefreshRight, InfoFilled, 
   Sunny, TrophyBase, CircleCheck, Bell
 } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
 
 const cardSentence = ref('')
 const currentTime = ref('')
@@ -132,11 +131,11 @@ const calculateDaysToEarthDay = () => {
   let earthDay = new Date(year, 3, 22)
   if (today > earthDay) earthDay = new Date(year + 1, 3, 22)
   const diff = Math.ceil((earthDay - today) / (1000 * 60 * 60 * 24))
-  return diff === 0 ? '今天！' : diff === 1 ? '明天！' : `${diff} 天`
+  return diff === 0 ? 'Today!' : diff === 1 ? 'Tomorrow!' : `${diff} days`
 }
 
 const updateTime = () => {
-  currentTime.value = new Date().toLocaleTimeString('zh-CN', { hour12: false })
+  currentTime.value = new Date().toLocaleTimeString('en-US', { hour12: false })
   daysToEarthDay.value = calculateDaysToEarthDay()
 }
 
@@ -224,7 +223,7 @@ onMounted(async () => {
   background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%);
 }
 
-/* Hero 区域 */
+/* Hero section */
 .hero-wrapper {
   position: relative;
   border-radius: 0 0 40px 40px;
@@ -255,7 +254,7 @@ onMounted(async () => {
   pointer-events: none; 
 }
 
-/* 顶部栏 */
+/* Top bar */
 .hero-top-bar {
   position: absolute;
   top: 0;
@@ -318,7 +317,7 @@ onMounted(async () => {
   50% { opacity: 0.3; }
 }
 
-/* 中央内容 */
+/* Central content */
 .hero-content {
   position: relative;
   z-index: 2;
@@ -402,7 +401,7 @@ onMounted(async () => {
   opacity: 0.95;
 }
 
-/* 浮动装饰 */
+/* Floating decorations */
 .floating-elements {
   position: absolute;
   inset: 0;
@@ -446,7 +445,7 @@ onMounted(async () => {
   50% { transform: translate(30px, 30px) scale(1.1); }
 }
 
-/* 信息卡片 */
+/* Information cards */
 .stats-row {
   padding: 0 1rem;
   margin-bottom: 2rem;
@@ -526,10 +525,10 @@ onMounted(async () => {
 }
 
 .card-value.countdown {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #0f172a;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  background-clip: initial;
 }
 
 .card-footer {
@@ -580,7 +579,7 @@ onMounted(async () => {
 .earth-decoration { background: #10b981; }
 .tip-decoration { background: #f59e0b; }
 
-/* 响应式 */
+/* Responsive */
 @media (max-width: 768px) {
   .hero-wrapper { height: 400px; border-radius: 0 0 30px 30px; }
   .hero-top-bar { padding: 16px 20px; }

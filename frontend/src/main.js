@@ -1,20 +1,20 @@
-// src/main.js（完整正确配置）
-import { createApp } from "vue";
-import { createPinia } from "pinia"; // 直接导入createPinia
-import ElementPlus from "element-plus";
-import "element-plus/dist/index.css";
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import App from './App.vue'
+import router from './router'
 
-import App from "./App.vue";
-import router from "./router";
+const app = createApp(App)
 
-// 1. 创建Pinia实例（必须先创建）
-const pinia = createPinia();
-const app = createApp(App);
+// Register All Element Plus
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
 
-// 2. 挂载顺序：先Pinia → 再路由 → 再ElementPlus
-app.use(pinia);
-app.use(router);
-app.use(ElementPlus);
+app.use(createPinia())
+app.use(router)
+app.use(ElementPlus)
 
-// 3. 挂载App
-app.mount("#app");
+app.mount('#app')

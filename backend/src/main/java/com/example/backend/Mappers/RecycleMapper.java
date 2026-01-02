@@ -20,5 +20,5 @@ public interface RecycleMapper {
 
     List<RecycleDO> selectAll();
     
-    List<RecycleDO> selectByCondition(@Param("name") String name);
+    List<RecycleDO> selectByCondition(@Param("name") String name, @Param("country") String country, @Param("city") String city);
 }
