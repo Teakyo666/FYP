@@ -352,7 +352,7 @@ onMounted(async () => {
   margin: 0 0 2rem 0;
   letter-spacing: -1px;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  max-width: 900px;
+  max-width: 2000px;
 }
 
 .hero-stats {

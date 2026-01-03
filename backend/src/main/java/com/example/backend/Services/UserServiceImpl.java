@@ -31,6 +31,20 @@ public class UserServiceImpl implements UserService {
         String PasswordTK = PasswordToken.encode(loginDO.getPassword());
         loginDO.setPassword(PasswordTK);
         loginMapper.insert(loginDO);
+        // User information register
+        String InfoId = UUID.randomUUID().toString();
+        UserInfoDO userInfoDO = new UserInfoDO();
+        userInfoDO.setId(InfoId);
+        userInfoDO.setUserId(uuid);
+
+        // Auto generate system name
+        String cleanId = InfoId == null ? "" : InfoId.replace("-", "");
+        String shortId = cleanId.substring(0, Math.min(8, cleanId.length()));
+        String name = "User" + shortId + (int)(Math.random() * 100);
+        userInfoDO.setName(name);
+        userInfoDO.setAvatar("http://localhost:8080/assets/2025/12/avatar_524d83a5496f.png");
+        userInfoMapper.insert(userInfoDO);
+
         result.setSuccess(Boolean.TRUE);
         result.setMessage("create user success");
         return result;
@@ -40,7 +54,7 @@ public class UserServiceImpl implements UserService {
     public Result deleteUser(String id){
         Result result = new Result();
         loginMapper.deleteById(id);
-        UserInfoDO userInfoDO= userInfoMapper.selectById(id);
+        UserInfoDO userInfoDO= userInfoMapper.selectByUserId(id);
         userInfoMapper.deleteById(userInfoDO.getId());
         result.setSuccess(Boolean.TRUE);
         result.setMessage("delete user success");

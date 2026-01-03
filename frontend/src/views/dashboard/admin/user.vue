@@ -347,7 +347,7 @@ const userInfo = reactive({
 // Form validation rules
 const formRules = {
   username: [{ required: true, message: 'Please enter email', trigger: 'blur' }],
-  password: [{ required: true, message: 'Please enter password', trigger: 'blur' }],
+  password: [{ required: false, message: 'Please enter password', trigger: 'blur' }],
   role: [{ required: true, message: 'Please select role', trigger: 'change' }]
 }
 
@@ -396,7 +396,7 @@ const enableEditing = () => {
 const saveUserInfo = async () => {
   try {
     const response = await UpdateProfile({
-      userId: currentUserInfo.value.id,
+      id: currentUserInfo.value.id,
       name: userInfo.name,
       city: userInfo.city,
       country: userInfo.country
@@ -489,7 +489,7 @@ const handleDelete = (row) => {
     }
   ).then(async () => {
     try {
-      const response = await UserDelete({ Id: row.id })
+      const response = await UserDelete({ id: row.id })
       if (response.success) {
         ElMessage.success('Deleted successfully')
         fetchData()
@@ -511,7 +511,7 @@ const handleSubmit = () => {
         let response
         if (isEdit.value) {
           const updateData = {
-            Id: formData.id,
+            id: formData.id,
             username: formData.username,
             password: formData.password,
             role: formData.role

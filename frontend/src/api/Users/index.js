@@ -21,7 +21,7 @@ export function UserDelete(data) {
   return request({
     url: "users/delete",
     method: "post",
-    data: data,
+    params: data,
   });
 }
 
@@ -35,7 +35,7 @@ export function UserList(data) {
 
 export function UserRegister(data) {
   return request({
-    url: "users/register",
+    url: "users/create",
     method: "post",
     data: data,
   });

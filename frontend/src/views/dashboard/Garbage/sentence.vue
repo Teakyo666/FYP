@@ -323,6 +323,8 @@ const handleEdit = (row) => {
   isEdit.value = true
   formData.id = row.id
   formData.sentence = row.sentence
+  formData.createBy = row.createBy
+  formData.createDate = row.createDate
   dialogVisible.value = true
 }
 
@@ -359,10 +361,11 @@ const handleSubmit = () => {
       try {
         let response
         if (isEdit.value) {
-          // Only send necessary fields
           const updateData = {
-            Id: formData.id,
-            sentence: formData.sentence
+            id: formData.id,
+            sentence: formData.sentence,
+            createBy: formData.createBy,
+            createDate: formData.createDate
           }
           response = await UpdateSentence(updateData)
         } else {

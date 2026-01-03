@@ -119,6 +119,14 @@
               </div>
             </template>
           </el-table-column>
+          <el-table-column prop="address" label="Address" min-width="200">
+            <template #default="scope">
+              <div class="address-cell">
+                <el-icon class="address-icon">📍</el-icon>
+                <span>{{ scope.row.address }}</span>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="createBy" label="Created By" width="150">
             <template #default="scope">
               <div class="creator-cell">
@@ -270,7 +278,7 @@ const tableData = ref([])
 
 // Search form data
 const searchForm = reactive({
-  searchType: 'name',  // 默认搜索类型为name
+  searchType: 'name',
   searchValue: ''
 })
 
@@ -750,6 +758,19 @@ onMounted(() => {
 
 .location-icon {
   font-size: 16px;
+}
+
+/* Address cell styling */
+.address-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.address-icon {
+  display: inline-block;
+  font-style: normal;
+  transform: rotate(0deg);
 }
 
 /* Creator cell styling */

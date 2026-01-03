@@ -105,6 +105,10 @@
                   <span class="info-icon">🏙️</span>
                   <span class="info-text">{{ station.city }}</span>
                 </div>
+                <div class="info-item" v-if="station.address">
+                  <span class="info-icon">📍</span>
+                  <span class="info-text">{{ station.address }}</span>
+                </div>
               </div>
             </div>
           </div>

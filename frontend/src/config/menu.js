@@ -22,7 +22,16 @@ export const menuConfig = {
       title: 'Garbage Classification',
       roles: ['admin', 'volunteer', 'recycler', 'customer'],
       order: 0
-    }
+    },
+    {
+      path: '/dashboard/garbage/placecheck',
+      name: 'GarbagePlaceCheck',
+      component: 'dashboard/Garbage/placecheck',
+      icon: 'Location',
+      title: 'Recycle Station Finder',
+      roles: ['admin', 'volunteer', 'recycler', 'customer'],
+      order: 0
+    },
   ],
   
   // Administrator exclusive menus
@@ -99,16 +108,6 @@ export const menuConfig = {
       roles: ['admin', 'recycler'],
       order: 1
     },
-    {
-      path: '/dashboard/garbage/placecheck',
-      name: 'GarbagePlaceCheck',
-      component: 'dashboard/Garbage/placecheck',
-      icon: 'Location',
-      title: 'Recycle Station Finder',
-      roles: ['admin', 'volunteer', 'recycler', 'customer'],
-      order: 1
-    },
-    
   ]
 }
 
