@@ -103,7 +103,7 @@ export const menuConfig = {
       path: '/dashboard/garbage/place',
       name: 'GarbagePlace',
       component: 'dashboard/Garbage/place',
-      icon: 'Location',
+      icon: 'Van',
       title: 'Recycle Station Management',
       roles: ['admin', 'recycler'],
       order: 1

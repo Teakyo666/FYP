@@ -7,21 +7,6 @@
       </div>
 
       <form class="reset-password-form" @submit.prevent="handleResetPassword">
-        <!-- Token input: bind to resetToken -->
-        <div class="form-item">
-          <input
-            type="text"
-            v-model="resetForm.resetToken"
-            placeholder="Enter reset Token"
-            class="reset-password-input"
-            :class="{ 'input-focus': tokenFocus }"
-            @focus="tokenFocus = true"
-            @blur="tokenFocus = false"
-            required
-          />
-          <p class="error-msg" v-if="tokenError">{{ tokenError }}</p>
-        </div>
-
         <!-- New password input -->
         <div class="form-item">
           <input

@@ -42,6 +42,7 @@ import { useUserStore } from '@/store/index'
 import { useMenuStore } from '@/store/menu'
 import {
   House,
+  Van,
   HelpFilled,
   User,
   Search,
@@ -55,6 +56,7 @@ import {
 // 导入图标组件
 const icons = {
   House,
+  Van,
   HelpFilled,
   User,
   Search,

@@ -103,7 +103,7 @@ const handleApplyToken = async () => {
     }
   } catch (error) {
     console.error("Request token API call failed:", error);
-    alert("Network error, please check if the backend is running!");
+    alert("User not found, please check if the email is correct!");
   } finally {
     isLoading.value = false;
   }

@@ -55,7 +55,7 @@
             </div>
           </div>
           
-          <div v-if="autoSaveStatus" class="ai-badge">
+          <div v-if="result && result.isAI && autoSaveStatus" class="ai-badge">
             <span class="ai-icon">✨</span>
             {{ autoSaveStatus.message }}
           </div>
@@ -201,11 +201,15 @@ const queryGarbage = async () => {
     loading.value = true
     result.value = null
     showAIHint.value = false
+    autoSaveStatus.value = null // 清除AI状态，因为这是数据库查询
     
     const response = await Garbage({ garbageName: garbageName.value.trim() })
     
     if (response.success) {
-      result.value = response.data
+      result.value = {
+        ...response.data,
+        isAI: false  // 标记这是数据库结果，不是AI生成的
+      }
       ElMessage.success('Classification found')
     } else {
       notFoundMessage.value = response.message || 'Classification not found in database'
@@ -268,7 +272,8 @@ const queryByAI = async () => {
         name: garbageName.value,
         category: outputData.type || 'Unknown Category',
         reason: outputData.disadv || 'No classification reason provided',
-        title: outputData.title || outputData.content || 'No disposal tips available'
+        title: outputData.title || outputData.content || 'No disposal tips available',
+        isAI: true  // 标记这是AI生成的结果
       }
       
       await autoSaveToAILibrary(result.value)
@@ -286,7 +291,7 @@ const queryByAI = async () => {
 }
 
 const autoSaveToAILibrary = async (resultData) => {
-  if (!resultData) return
+  if (!resultData || !resultData.isAI) return  // 只有AI生成的结果才保存和标记
   
   try {
     const aiData = {
